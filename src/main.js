@@ -20,7 +20,7 @@ var Main = function(){
         camera.position.y = 75;
 
         camera.position.z = 75;
-        //camera.position.x = 50;
+        camera.position.x = 75;
         camera.lookAt(scene.position);
         var ambientLight = new THREE.AmbientLight( 0xffffff );
         scene.add(ambientLight);
@@ -58,7 +58,7 @@ var Main = function(){
         this.addToScene(earth.getMesh());
         moon = new Moon();
         moon.init();
-        moonOrbitPoints = orbitUtils.testEllipse(0.5, 280, 10);
+        moonOrbitPoints = orbitUtils.testEllipse(0.5, 720, 10);
         this.addToScene(moon.getMesh());
 test();
     };
@@ -135,11 +135,11 @@ test();
     var moonCount = 0;
     var updateMoon = function(delta){
         moon.getMesh().rotation.y  += 1/4 * delta;
-        moon.getMesh().position.x =  moonOrbitPoints[moonCount].x;
-        moon.getMesh().position.z =  moonOrbitPoints[moonCount].y;
+        moon.getMesh().position.x = earth.getMesh().position.x + moonOrbitPoints[moonCount].x;
+        moon.getMesh().position.z = earth.getMesh().position.z + moonOrbitPoints[moonCount].y;
 
         moonCount++;
-        if(moonCount == 560) {moonCount = 0;}
+        if(moonCount >= moonOrbitPoints.length) {moonCount = 0;}
         //moon.computeOrbit(moon.getMesh(),earth.getMesh());
     };
 };

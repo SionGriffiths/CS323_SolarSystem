@@ -18,13 +18,13 @@ var OrbitUtils = function(){
         //}
 
         while(theta <= periodSlices) {
-
+            theta += computeTheta(e,theta,periodSlices);
+            r =  computeR(e,theta,semiMjorAxis);
             //console.log("r = ", r, "theta = ", theta);
             var x = polarXtoCart(r,theta);
             var y = polarYtoCart(r,theta);
             orbitPoints.push(new THREE.Vector3(x, y,0));
-            theta += computeTheta(e,theta,periodSlices);
-            r =  computeR(e,theta,semiMjorAxis);
+
         }
         return orbitPoints;
     };
