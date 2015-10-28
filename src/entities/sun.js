@@ -9,7 +9,7 @@ var Sun = function(){
         this.material = new THREE.MeshPhongMaterial();
         this.material.map = THREE.ImageUtils.loadTexture('assets/images/sunmap.jpg');
         this.mesh = new THREE.Mesh(this.geometry, this.material);
-        this.mesh.position.x = 40;
+        //this.mesh.position.x = 40;
     };
 
     this.createGeometry = function(){};
