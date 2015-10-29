@@ -17,10 +17,10 @@ var Main = function(){
         orbitUtils = new OrbitUtils();
         scene = new THREE.Scene();
         camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
-        camera.position.y = 75;
+        camera.position.y = 125;
 
-        camera.position.z = 75;
-        camera.position.x = 75;
+        camera.position.z = 125;
+        camera.position.x = 125;
         camera.lookAt(scene.position);
         var ambientLight = new THREE.AmbientLight( 0xffffff );
         scene.add(ambientLight);
@@ -54,13 +54,13 @@ var Main = function(){
         this.addToScene(sun.getMesh());
         earth = new Earth();
         earth.init();
-        earthOrbitPoints = orbitUtils.testEllipse(0.12,720,24);
+        earthOrbitPoints = orbitUtils.testEllipse(0.12,720,40);
         this.addToScene(earth.getMesh());
         moon = new Moon();
         moon.init();
-        moonOrbitPoints = orbitUtils.testEllipse(0.5, 720, 10);
+        moonOrbitPoints = orbitUtils.testEllipse(0.5, 720, 22);
         this.addToScene(moon.getMesh());
-test();
+//test();
     };
 
     var render = function(){
@@ -82,7 +82,6 @@ test();
         function v(x,y,z){
             return new THREE.Vector3(x,y,z);
         }
-
         //Create axis (point1, point2, colour)
         function createAxis(p1, p2, color){
             var line, lineGeometry = new THREE.Geometry(),
@@ -91,7 +90,6 @@ test();
             line = new THREE.Line(lineGeometry, lineMat);
             scene.add(line);
         }
-
         createAxis(v(-axisLength, 0, 0), v(axisLength, 0, 0), 0xFF0000);
         createAxis(v(0, -axisLength, 0), v(0, axisLength, 0), 0x00FF00);
         createAxis(v(0, 0, -axisLength), v(0, 0, axisLength), 0x0000FF);
@@ -101,7 +99,7 @@ test();
         console.log(moonOrbitPoints);
 
         var material = new THREE.LineBasicMaterial({
-            color: 0x0000ff
+            color: 0xffffff
         });
         var geometry = new THREE.Geometry();
         for(var i = 0; i < moonOrbitPoints.length; i++ ){
@@ -138,7 +136,7 @@ test();
         moon.getMesh().position.x = earth.getMesh().position.x + moonOrbitPoints[moonCount].x;
         moon.getMesh().position.z = earth.getMesh().position.z + moonOrbitPoints[moonCount].y;
 
-        moonCount++;
+        moonCount += 1 * 4;
         if(moonCount >= moonOrbitPoints.length) {moonCount = 0;}
         //moon.computeOrbit(moon.getMesh(),earth.getMesh());
     };

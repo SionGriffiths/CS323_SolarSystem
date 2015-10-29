@@ -1,30 +1,17 @@
 var OrbitUtils = function(){
 
-    this.testEllipse = function(e, periodSlices, semiMjorAxis){
+    this.testEllipse = function(e, periodSlices, semiMajorAxis){
         var orbitPoints = [];
-        //var distanceFromPivot = 0;
         var theta = 0;
         var r = 0;
-        //var e = 0.12;
-        //var periodSlices = 365;
-        //var semiMjorAxis = 14.960; //length of the axis???
-
-        //for(var i = 0; i < periodSlices; i++){
-        //    var x = polarXtoCart(r,theta);
-        //    var y = polarYtoCart(r,theta);
-        //    orbitPoints.push(new THREE.Vector3(x,y, 0));
-        //    theta += computeTheta(e,theta,periodSlices);
-        //    r =  computeR(e,theta,semiMjorAxis);
-        //}
 
         while(theta <= periodSlices) {
             theta += computeTheta(e,theta,periodSlices);
-            r =  computeR(e,theta,semiMjorAxis);
+            r =  computeR(e,theta,semiMajorAxis);
             //console.log("r = ", r, "theta = ", theta);
             var x = polarXtoCart(r,theta);
             var y = polarYtoCart(r,theta);
             orbitPoints.push(new THREE.Vector3(x, y,0));
-
         }
         return orbitPoints;
     };
