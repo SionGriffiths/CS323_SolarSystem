@@ -15,6 +15,10 @@ var Earth = function(){
         this.material.bumpScale = 0.1;
         this.mesh = new THREE.Mesh(this.geometry, this.material);
 
+        this.mesh.rotation.y = 0.4101524;
+
+        //this.mesh.add(this.drawAxis());
+
     };
 
     this.createGeometry = function(){};
@@ -26,6 +30,14 @@ var Earth = function(){
     this.axialAngle = function(){
 
     };
+
+    //this.drawAxis = function(){
+    //    var line, lineGeometry = new THREE.Geometry(),
+    //        lineMat = new THREE.LineBasicMaterial({color: 0xffffff});
+    //    lineGeometry.vertices.push(0, 0);
+    //    line = new THREE.Line(lineGeometry, lineMat);
+    //    return line;
+    //};
 
      this.computeOrbit = function(earthMesh, sunMesh){
         var earthDistanceFromSun = 24;

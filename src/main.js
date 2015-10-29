@@ -54,13 +54,13 @@ var Main = function(){
         this.addToScene(sun.getMesh());
         earth = new Earth();
         earth.init();
-        earthOrbitPoints = orbitUtils.testEllipse(0.12,720,40);
+        earthOrbitPoints = orbitUtils.generateElliptical(0.12,365,40);
         this.addToScene(earth.getMesh());
         moon = new Moon();
         moon.init();
-        moonOrbitPoints = orbitUtils.testEllipse(0.5, 720, 22);
+        moonOrbitPoints = orbitUtils.generateElliptical(0.5, 28, 8);
         this.addToScene(moon.getMesh());
-//test();
+test();
     };
 
     var render = function(){
@@ -117,7 +117,7 @@ var Main = function(){
         //earth.computeOrbit(earth.getMesh(), sun.getMesh());
 
         earth.getMesh().position.x = earthOrbitPoints[count].x;
-        earth.getMesh().position.z = earthOrbitPoints[count].y;
+        earth.getMesh().position.z = earthOrbitPoints[count].z;
         //orbitUtils.computeOrbit(earth, sun.getMesh(), 24, 0.2);
         count ++;
         if(count >= earthOrbitPoints.length){
@@ -134,10 +134,10 @@ var Main = function(){
     var updateMoon = function(delta){
         moon.getMesh().rotation.y  += 1/4 * delta;
         moon.getMesh().position.x = earth.getMesh().position.x + moonOrbitPoints[moonCount].x;
-        moon.getMesh().position.z = earth.getMesh().position.z + moonOrbitPoints[moonCount].y;
+        moon.getMesh().position.z = earth.getMesh().position.z + moonOrbitPoints[moonCount].z;
 
-        moonCount += 1 * 4;
+        moonCount += 1;
         if(moonCount >= moonOrbitPoints.length) {moonCount = 0;}
-        //moon.computeOrbit(moon.getMesh(),earth.getMesh());
+
     };
 };

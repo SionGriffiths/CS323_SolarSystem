@@ -1,25 +1,29 @@
 var OrbitUtils = function(){
 
-    this.testEllipse = function(e, periodSlices, semiMajorAxis){
+    this.generateElliptical = function(e, periodSlices, semiMajorAxis){
         var orbitPoints = [];
         var theta = 0;
         var r = 0;
 
-        while(theta <= periodSlices) {
+        while(theta <= 2*Math.PI) {
             theta += computeTheta(e,theta,periodSlices);
             r =  computeR(e,theta,semiMajorAxis);
             //console.log("r = ", r, "theta = ", theta);
             var x = polarXtoCart(r,theta);
-            var y = polarYtoCart(r,theta);
-            orbitPoints.push(new THREE.Vector3(x, y,0));
+            var z = polarZtoCart(r,theta);
+            orbitPoints.push(new THREE.Vector3(x,0,z));
         }
         return orbitPoints;
     };
 
+
+    //((2/N)( 1+ e cos ? )^2)/(1-e^2)^(3/2)
     var computeTheta = function(e,theta,periodSlices){
         return ((2/periodSlices)* Math.pow((1+ (e*Math.cos(theta))),2))  / Math.pow( (1-Math.pow(e,2)) ,(3/2));
     };
 
+
+    //r = a(1-e^2)/(1+ e cos ? )
     var computeR = function(e, theta, a){
         return (a*(1-Math.pow(e,2)))/(1+e*Math.cos(theta));
     };
@@ -28,7 +32,7 @@ var OrbitUtils = function(){
         return r * Math.cos(theta);
     };
 
-    var polarYtoCart = function(r, theta){
+    var polarZtoCart = function(r, theta){
         return r * Math.sin(theta);
     };
 
