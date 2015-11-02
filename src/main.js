@@ -18,7 +18,6 @@ var Main = function(){
         scene = new THREE.Scene();
         camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
         camera.position.y = 125;
-
         camera.position.z = 125;
         camera.position.x = 125;
         camera.lookAt(scene.position);
@@ -54,13 +53,15 @@ var Main = function(){
         this.addToScene(sun.getMesh());
         earth = new Earth();
         earth.init();
+        earth.getMesh().add(makeLine( v(0, 33, 0), v(0, -33, 0), 0xaa00FF));
         earthOrbitPoints = orbitUtils.generateElliptical(0.12,365,40);
         this.addToScene(earth.getMesh());
+
         moon = new Moon();
         moon.init();
         moonOrbitPoints = orbitUtils.generateElliptical(0.5, 28, 8);
         this.addToScene(moon.getMesh());
-test();
+//test();
     };
 
     var render = function(){
@@ -113,12 +114,13 @@ test();
 
     var count = 0;
     var updateEarth = function(delta){
-        earth.getMesh().rotation.y  += 1/2 * delta;
-        //earth.computeOrbit(earth.getMesh(), sun.getMesh());
 
-        earth.getMesh().position.x = earthOrbitPoints[count].x;
+        earth.getMesh().rotation.y  += delta;
+        //earth.getMesh().position.x = earthOrb
+        // itPoints[count].x;
         earth.getMesh().position.z = earthOrbitPoints[count].z;
-        //orbitUtils.computeOrbit(earth, sun.getMesh(), 24, 0.2);
+        earth.getMesh().position.x = earthOrbitPoints[count].x;
+
         count ++;
         if(count >= earthOrbitPoints.length){
             count = 0;
@@ -128,6 +130,7 @@ test();
     var updateSun = function(delta){
         sun.getMesh().rotation.y += 1/64 *delta;
     };
+
 
 
     var moonCount = 0;
@@ -140,4 +143,18 @@ test();
         if(moonCount >= moonOrbitPoints.length) {moonCount = 0;}
 
     };
+
+
+    function v(x,y,z){
+        return new THREE.Vector3(x,y,z);
+    }
+
+    var makeLine = function(point1, point2, colour){
+        var line, lineGeometry = new THREE.Geometry(),
+            lineMat = new THREE.LineBasicMaterial({color: colour, lineWidth: 1});
+        lineGeometry.vertices.push(point1, point2);
+        return new THREE.Line(lineGeometry, lineMat);
+    };
+
+
 };
