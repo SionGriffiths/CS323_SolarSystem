@@ -11,7 +11,7 @@ var Earth = function(){
         this.material.bumpMap = THREE.ImageUtils.loadTexture('assets/images/earthbump1k.jpg');
         this.material.bumpScale = 0.1;
         this.mesh = new THREE.Mesh(this.geometry, this.material);
-        this.mesh.rotateX(0.4101524);
+        this.mesh.rotateX(0.409105177);
     };
 
     this.getMesh = function(){

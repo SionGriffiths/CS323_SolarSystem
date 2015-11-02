@@ -11,10 +11,12 @@ var Main = function(){
     var orbitUtils = null;
     var earthOrbitPoints = null;
     var moonOrbitPoints = null;
+    var matrixUtils = null;
 
     this.initSim = function(){
         globalVars = new GlobalVars();
         orbitUtils = new OrbitUtils();
+        matrixUtils = new MatrixUtils();
         scene = new THREE.Scene();
         camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
         camera.position.y = 125;
@@ -29,7 +31,7 @@ var Main = function(){
         //window.addEventListener( 'resize', onWindowResize, false );
         this.initEntities();
         debugaxis(100);
-
+        console.log(matrixUtils.matMulti());
         //test();
     };
 
@@ -54,12 +56,12 @@ var Main = function(){
         earth = new Earth();
         earth.init();
         earth.getMesh().add(makeLine( v(0, 33, 0), v(0, -33, 0), 0xaa00FF));
-        earthOrbitPoints = orbitUtils.generateElliptical(0.12,365,40);
+        earthOrbitPoints = orbitUtils.generateElliptical(0.12,3650,40);
         this.addToScene(earth.getMesh());
 
         moon = new Moon();
         moon.init();
-        moonOrbitPoints = orbitUtils.generateElliptical(0.5, 28, 8);
+        moonOrbitPoints = orbitUtils.generateElliptical(0.3, 280, 15);
         this.addToScene(moon.getMesh());
 //test();
     };
@@ -116,8 +118,6 @@ var Main = function(){
     var updateEarth = function(delta){
 
         earth.getMesh().rotation.y  += delta;
-        //earth.getMesh().position.x = earthOrb
-        // itPoints[count].x;
         earth.getMesh().position.z = earthOrbitPoints[count].z;
         earth.getMesh().position.x = earthOrbitPoints[count].x;
 
