@@ -9,7 +9,7 @@ var Moon = function(){
         this.material = new THREE.MeshPhongMaterial();
         this.material.map = THREE.ImageUtils.loadTexture('assets/images/moonmap1k.jpg');
         this.mesh = new THREE.Mesh(this.geometry, this.material);
-        this.mesh.position.x = 15;
+        this.mesh.rotateX(0.42693043);
     };
 
 

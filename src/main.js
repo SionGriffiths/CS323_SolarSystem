@@ -19,7 +19,7 @@ var Main = function(){
         matrixUtils = new MatrixUtils();
         scene = new THREE.Scene();
         camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
-        camera.position.y = 125;
+        //camera.position.y = 125;
         camera.position.z = 125;
         camera.position.x = 125;
         camera.lookAt(scene.position);
@@ -28,11 +28,11 @@ var Main = function(){
         renderer = new THREE.WebGLRenderer( {antialias : true});
         renderer.setSize( window.innerWidth, window.innerHeight );
         document.body.appendChild( renderer.domElement );
-        //window.addEventListener( 'resize', onWindowResize, false );
         this.initEntities();
-        debugaxis(100);
-
-        //test();
+        var axisLength = 100;
+        scene.add(makeLine(v(-axisLength, 0, 0), v(axisLength, 0, 0), 0xFF0000));
+        scene.add(makeLine(v(0, -axisLength, 0), v(0, axisLength, 0), 0x00FF00));
+        scene.add(makeLine(v(0, 0, -axisLength), v(0, 0, axisLength), 0x0000FF));
     };
 
     this.startSim = function(){
@@ -58,7 +58,7 @@ var Main = function(){
         earth.getMesh().add(makeLine( v(0, 15, 0), v(0, 0, 0), 0xaa00FF));
         earth.getMesh().add(makeLine( v(0, 0, 15), v(0, 0, 0), 0xFFaa00));
         earth.getMesh().add(makeLine( v(15, 0, 0), v(0, 0, 0), 0x00FFaa));
-        earthOrbitPoints = orbitUtils.generateElliptical(0.12,3650,40);
+        earthOrbitPoints = orbitUtils.generateElliptical(0.12,3650,80);
         this.addToScene(earth.getMesh());
 
         moon = new Moon();
@@ -83,24 +83,6 @@ var Main = function(){
         updateMoon(delta);
 
 
-    };
-
-    var debugaxis = function(axisLength){
-        //Shorten the vertex function
-        function v(x,y,z){
-            return new THREE.Vector3(x,y,z);
-        }
-        //Create axis (point1, point2, colour)
-        function createAxis(p1, p2, color){
-            var line, lineGeometry = new THREE.Geometry(),
-                lineMat = new THREE.LineBasicMaterial({color: color, lineWidth: 1});
-            lineGeometry.vertices.push(p1, p2);
-            line = new THREE.Line(lineGeometry, lineMat);
-            scene.add(line);
-        }
-        createAxis(v(-axisLength, 0, 0), v(axisLength, 0, 0), 0xFF0000);
-        createAxis(v(0, -axisLength, 0), v(0, axisLength, 0), 0x00FF00);
-        createAxis(v(0, 0, -axisLength), v(0, 0, axisLength), 0x0000FF);
     };
 
     var test = function(){
@@ -135,9 +117,6 @@ var Main = function(){
     var updateSun = function(delta){
         sun.getMesh().rotation.y += 1/64 *delta;
     };
-
-
-
     var moonCount = 0;
     var updateMoon = function(delta){
         //moon.getMesh().rotation.y  += 1/4 * delta;
