@@ -55,12 +55,17 @@ var Main = function(){
         this.addToScene(sun.getMesh());
         earth = new Earth();
         earth.init();
-        earth.getMesh().add(makeLine( v(0, 33, 0), v(0, -33, 0), 0xaa00FF));
+        earth.getMesh().add(makeLine( v(0, 15, 0), v(0, 0, 0), 0xaa00FF));
+        earth.getMesh().add(makeLine( v(0, 0, 15), v(0, 0, 0), 0xFFaa00));
+        earth.getMesh().add(makeLine( v(15, 0, 0), v(0, 0, 0), 0x00FFaa));
         earthOrbitPoints = orbitUtils.generateElliptical(0.12,3650,40);
         this.addToScene(earth.getMesh());
 
         moon = new Moon();
         moon.init();
+        moon.getMesh().add(makeLine( v(0, 15, 0), v(0, 0, 0), 0xFF00aa));
+        moon.getMesh().add(makeLine( v(0, 0, 15), v(0, 0, 0), 0xaaFF00));
+        moon.getMesh().add(makeLine( v(15, 0, 0), v(0, 0, 0), 0x00aaFF));
         moonOrbitPoints = orbitUtils.generateElliptical(0.3, 280, 15);
         this.addToScene(moon.getMesh());
 //test();
@@ -135,7 +140,8 @@ var Main = function(){
 
     var moonCount = 0;
     var updateMoon = function(delta){
-        moon.getMesh().rotation.y  += 1/4 * delta;
+        //moon.getMesh().rotation.y  += 1/4 * delta;
+        moon.getMesh().lookAt(earth.getMesh().position);
         moon.getMesh().position.x = earth.getMesh().position.x + moonOrbitPoints[moonCount].x;
         moon.getMesh().position.z = earth.getMesh().position.z + moonOrbitPoints[moonCount].z;
 
