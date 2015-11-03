@@ -31,7 +31,7 @@ var Main = function(){
         //window.addEventListener( 'resize', onWindowResize, false );
         this.initEntities();
         debugaxis(100);
-        console.log(matrixUtils.matMulti());
+
         //test();
     };
 
