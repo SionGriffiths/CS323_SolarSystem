@@ -12,6 +12,7 @@ var Main = function(){
     var earthOrbitPoints = null;
     var moonOrbitPoints = null;
     var matrixUtils = null;
+    var shadowCastingLight = null;
 
     this.initSim = function(){
         globalVars = new GlobalVars();
@@ -19,20 +20,24 @@ var Main = function(){
         matrixUtils = new MatrixUtils();
         scene = new THREE.Scene();
         camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
-        //camera.position.y = 125;
+        camera.position.y = 125;
         camera.position.z = 125;
         camera.position.x = 125;
         camera.lookAt(scene.position);
-        var ambientLight = new THREE.AmbientLight( 0xffffff );
-        scene.add(ambientLight);
+        var ambientLight = new THREE.AmbientLight( 0xffffff , 0.2 );
+        //scene.add(ambientLight);
         renderer = new THREE.WebGLRenderer( {antialias : true});
         renderer.setSize( window.innerWidth, window.innerHeight );
+        renderer.shadowMapEnabled = true;
         document.body.appendChild( renderer.domElement );
         this.initEntities();
         var axisLength = 100;
         scene.add(makeLine(v(-axisLength, 0, 0), v(axisLength, 0, 0), 0xFF0000));
         scene.add(makeLine(v(0, -axisLength, 0), v(0, axisLength, 0), 0x00FF00));
         scene.add(makeLine(v(0, 0, -axisLength), v(0, 0, axisLength), 0x0000FF));
+        shadowCastingLight = new THREE.SpotLight(0xffffff, 1);
+        initShadowCam();
+        scene.add(shadowCastingLight);
     };
 
     this.startSim = function(){
@@ -60,7 +65,6 @@ var Main = function(){
         earth.getMesh().add(makeLine( v(15, 0, 0), v(0, 0, 0), 0x00FFaa));
         earthOrbitPoints = orbitUtils.generateElliptical(0.12,3650,80);
         this.addToScene(earth.getMesh());
-
         moon = new Moon();
         moon.init();
         moon.getMesh().add(makeLine( v(0, 15, 0), v(0, 0, 0), 0xFF00aa));
@@ -81,7 +85,7 @@ var Main = function(){
         updateEarth(delta);
         updateSun(delta);
         updateMoon(delta);
-
+        updateLight();
 
     };
 
@@ -129,17 +133,32 @@ var Main = function(){
 
     };
 
-
+var updateLight = function(){
+  shadowCastingLight.target = earth.getMesh();
+};
     function v(x,y,z){
         return new THREE.Vector3(x,y,z);
     }
 
     var makeLine = function(point1, point2, colour){
         var line, lineGeometry = new THREE.Geometry(),
-            lineMat = new THREE.LineBasicMaterial({color: colour, lineWidth: 1});
+            lineMat = new THREE.LineBasicMaterial({color: colour});
         lineGeometry.vertices.push(point1, point2);
         return new THREE.Line(lineGeometry, lineMat);
     };
 
+
+    var initShadowCam = function(){
+        shadowCastingLight.castShadow = true;
+        shadowCastingLight.shadowDarkness = 0.7;
+        shadowCastingLight.shadowCameraVisible = true;
+        shadowCastingLight.shadowCameraNear = 20;
+        shadowCastingLight.shadowCameraFar = 500;
+        shadowCastingLight.shadowCameraLeft = -0.5;
+        shadowCastingLight.shadowCameraRight = 0.5;
+        shadowCastingLight.shadowCameraTop = 0.5;
+        shadowCastingLight.shadowCameraBottom = -0.5;
+        scene.add(shadowCastingLight);
+    };
 
 };

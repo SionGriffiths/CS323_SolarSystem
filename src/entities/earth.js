@@ -12,6 +12,9 @@ var Earth = function(){
         this.material.bumpScale = 0.1;
         this.mesh = new THREE.Mesh(this.geometry, this.material);
         this.mesh.rotateX(0.409105177);
+        this.mesh.castShadow = true;
+        this.mesh.receiveShadow = true;
+
     };
 
     this.getMesh = function(){

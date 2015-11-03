@@ -10,6 +10,8 @@ var Moon = function(){
         this.material.map = THREE.ImageUtils.loadTexture('assets/images/moonmap1k.jpg');
         this.mesh = new THREE.Mesh(this.geometry, this.material);
         this.mesh.rotateX(0.42693043);
+        this.mesh.castShadow = true;
+        this.mesh.receiveShadow = true;
     };
 
 
