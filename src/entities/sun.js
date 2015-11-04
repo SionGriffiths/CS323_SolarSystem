@@ -6,17 +6,12 @@ var Sun = function(){
 
     this.init = function(){
         this.geometry = new THREE.SphereGeometry(14, 32, 32);
-        this.material = new THREE.MeshPhongMaterial();
+        this.material = new THREE.MeshBasicMaterial();
         this.material.map = THREE.ImageUtils.loadTexture('assets/images/sunmap.jpg');
         this.mesh = new THREE.Mesh(this.geometry, this.material);
-
     };
 
     this.getMesh = function(){
         return this.mesh;
     };
-
-
-
-
 };
