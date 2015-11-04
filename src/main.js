@@ -19,18 +19,18 @@ var Main = function(){
         globalVars = new GlobalVars();
         orbitUtils = new OrbitUtils();
         matrixUtils = new MatrixUtils();
-
         scene = new THREE.Scene();
         camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
         //camera.position.y = 125;
         camera.position.z = 125;
         camera.position.x = 125;
-        camera.lookAt(scene.position);
-        var ambientLight = new THREE.AmbientLight( 0xffffff , 0.2 );
+        var ambientIntensity = 1;
+        var ambientLight = new THREE.AmbientLight( 0xffffff );
+        ambientLight.color.setRGB(ambientIntensity,ambientIntensity,ambientIntensity);
         scene.add(ambientLight);
         renderer = new THREE.WebGLRenderer( {antialias : true});
         renderer.setSize( window.innerWidth, window.innerHeight );
-        renderer.shadowMapEnabled = true;
+        renderer.shadowMap.enabled = true;
         document.body.appendChild( renderer.domElement );
         controls = new THREE.OrbitControls( camera, renderer.domElement );
         controls.enableDamping = true;
@@ -78,6 +78,7 @@ var Main = function(){
         moon.getMesh().add(makeLine( v(15, 0, 0), v(0, 0, 0), 0x00aaFF));
         moonOrbitPoints = orbitUtils.generateElliptical(0.3, 280, 15, 15.145);
         this.addToScene(moon.getMesh());
+        camera.lookAt(earth.getMesh().position);
 //test();
     };
 

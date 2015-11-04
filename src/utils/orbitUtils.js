@@ -22,12 +22,6 @@ var OrbitUtils = function(){
             }else {
                 ret = convertMatrixToVertices(orbitVerts);
             }
-
-
-            console.log(ret);
-
-
-
             return ret;
 
 
