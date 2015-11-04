@@ -13,23 +13,29 @@ var Main = function(){
     var moonOrbitPoints = null;
     var matrixUtils = null;
     var shadowCastingLight = null;
+    var controls = null;
 
     this.initSim = function(){
         globalVars = new GlobalVars();
         orbitUtils = new OrbitUtils();
         matrixUtils = new MatrixUtils();
+
         scene = new THREE.Scene();
         camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
-        camera.position.y = 125;
+        //camera.position.y = 125;
         camera.position.z = 125;
         camera.position.x = 125;
         camera.lookAt(scene.position);
         var ambientLight = new THREE.AmbientLight( 0xffffff , 0.2 );
-        //scene.add(ambientLight);
+        scene.add(ambientLight);
         renderer = new THREE.WebGLRenderer( {antialias : true});
         renderer.setSize( window.innerWidth, window.innerHeight );
         renderer.shadowMapEnabled = true;
         document.body.appendChild( renderer.domElement );
+        controls = new THREE.OrbitControls( camera, renderer.domElement );
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.25;
+        controls.enableZoom = true;
         this.initEntities();
         var axisLength = 100;
         scene.add(makeLine(v(-axisLength, 0, 0), v(axisLength, 0, 0), 0xFF0000));
@@ -63,14 +69,14 @@ var Main = function(){
         earth.getMesh().add(makeLine( v(0, 15, 0), v(0, 0, 0), 0xaa00FF));
         earth.getMesh().add(makeLine( v(0, 0, 15), v(0, 0, 0), 0xFFaa00));
         earth.getMesh().add(makeLine( v(15, 0, 0), v(0, 0, 0), 0x00FFaa));
-        earthOrbitPoints = orbitUtils.generateElliptical(0.12,3650,80);
+        earthOrbitPoints = orbitUtils.generateElliptical(0.12,3650,80,0);
         this.addToScene(earth.getMesh());
         moon = new Moon();
         moon.init();
         moon.getMesh().add(makeLine( v(0, 15, 0), v(0, 0, 0), 0xFF00aa));
         moon.getMesh().add(makeLine( v(0, 0, 15), v(0, 0, 0), 0xaaFF00));
         moon.getMesh().add(makeLine( v(15, 0, 0), v(0, 0, 0), 0x00aaFF));
-        moonOrbitPoints = orbitUtils.generateElliptical(0.3, 280, 15);
+        moonOrbitPoints = orbitUtils.generateElliptical(0.3, 280, 15, 15.145);
         this.addToScene(moon.getMesh());
 //test();
     };
@@ -127,6 +133,7 @@ var Main = function(){
         moon.getMesh().lookAt(earth.getMesh().position);
         moon.getMesh().position.x = earth.getMesh().position.x + moonOrbitPoints[moonCount].x;
         moon.getMesh().position.z = earth.getMesh().position.z + moonOrbitPoints[moonCount].z;
+        moon.getMesh().position.y = earth.getMesh().position.y + moonOrbitPoints[moonCount].y;
 
         moonCount += 1;
         if(moonCount >= moonOrbitPoints.length) {moonCount = 0;}
@@ -151,7 +158,7 @@ var updateLight = function(){
     var initShadowCam = function(){
         shadowCastingLight.castShadow = true;
         shadowCastingLight.shadowDarkness = 0.7;
-        shadowCastingLight.shadowCameraVisible = true;
+        shadowCastingLight.shadowCameraVisible = false;
         shadowCastingLight.shadowCameraNear = 20;
         shadowCastingLight.shadowCameraFar = 500;
         shadowCastingLight.shadowCameraLeft = -0.5;
