@@ -3,7 +3,8 @@ var Main = function(){
 
     var camera,renderer,earth,sun,moon,globalVars,orbitUtils,
         moonOrbitPoints,matrixUtils,shadowCastingLight,
-        controls,ambientLight,gui,moonPlot;
+        controls,ambientLight,gui,geometryTools,sceneAxisX,
+        sceneAxisY,sceneAxisZ,earthAxis,moonAxis;
     var ambientIntensityInitial = 1;
 
 
@@ -13,6 +14,9 @@ var Main = function(){
         earthOrbitTrace : false,
         removeSun : false,
         paused : false,
+        sceneAxes : false,
+        earthAxis : false,
+        moonAxis : false,
         simSpeed : 1
     };
 
@@ -20,13 +24,15 @@ var Main = function(){
         globalVars = new GlobalVars();
         orbitUtils = new OrbitUtils();
         matrixUtils = new MatrixUtils();
+        geometryTools = new GeometryTools();
         globalVars.scene = new THREE.Scene();
         camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
         //camera.position.y = 125;
         camera.position.z = 125;
         camera.position.x = 125;
+        initSceneAxes(100);
         ambientLight = new THREE.AmbientLight( 0xffffff );
-        globalVars.scene.add(ambientLight);
+        addToScene(ambientLight);
         renderer = new THREE.WebGLRenderer( {antialias : true});
         renderer.setSize( window.innerWidth, window.innerHeight );
         renderer.shadowMap.enabled = true;
@@ -37,22 +43,19 @@ var Main = function(){
         controls.dampingFactor = 0.25;
         controls.enableZoom = true;
         this.initEntities();
-        var axisLength = 100;
-        globalVars.scene.add(makeLine(v(-axisLength, 0, 0), v(axisLength, 0, 0), 0xFF0000));
-        globalVars.scene.add(makeLine(v(0, -axisLength, 0), v(0, axisLength, 0), 0x00FF00));
-        globalVars.scene.add(makeLine(v(0, 0, -axisLength), v(0, 0, axisLength), 0xFF00aa));
+
         shadowCastingLight = new THREE.SpotLight(0xffffff, 1);
         initShadowCam();
-        globalVars.scene.add(shadowCastingLight);
+        addToScene(shadowCastingLight);
         gui = initGUI();
     };
 
     this.startSim = function(){
-
         (function drawFrame(){
             if(guiVars.paused) {
                 render();
-                requestAnimationFrame(drawFrame);
+                pausedEnabledUpdates();
+                window.requestAnimationFrame(drawFrame);
                 return;
             }
             update();
@@ -61,30 +64,34 @@ var Main = function(){
         }());
     };
 
-    this.addToScene = function(entity){
+    var addToScene = function(entity){
         globalVars.scene.add(entity);
+    };
+
+    var removeFromScene = function(entity){
+        globalVars.scene.remove(entity)
     };
 
     this.initEntities = function(){
         sun = new Sun();
         sun.init();
-        this.addToScene(sun.getMesh());
+        addToScene(sun.getMesh());
         earth = new Earth();
-        earth.init();
-        earth.getMesh().add(makeLine( v(0, 15, 0), v(0, -15, 0), 0xaa00FF));
-        //earth.getMesh().add(makeLine( v(0, 0, 15), v(0, 0, 0), 0xFFaa00));
-        //earth.getMesh().add(makeLine( v(15, 0, 0), v(0, 0, 0), 0x00FFaa));
+        earth.init(globalVars,guiVars);
+        earthAxis = (geometryTools.makeLine( geometryTools.vec3(0, 15, 0), geometryTools.vec3(0, -15, 0), 0xaa00FF));
+        //earth.getMesh().add(geometryTools.makeLine( geometryTools.vec3(0, 0, 15), geometryTools.vec3(0, 0, 0), 0xFFaa00));
+        //earth.getMesh().add(geometryTools.makeLine( geometryTools.vec3(15, 0, 0), geometryTools.vec3(0, 0, 0), 0x00FFaa));
         earth.orbitPoints = orbitUtils.generateElliptical(0.12,3650,80,0);
         earth.orbitPlot = orbitUtils.plotOrbit(earth.orbitPoints,0x00aaFF);
-        this.addToScene(earth.getMesh());
+        addToScene(earth.getMesh());
         moon = new Moon();
         moon.init();
-        //moon.getMesh().add(makeLine( v(0, 15, 0), v(0, 0, 0), 0xFF00aa));
-        moon.getMesh().add(makeLine( v(0, 0, 10), v(0, 0, -10), 0xaaFF00));
-        //moon.getMesh().add(makeLine( v(15, 0, 0), v(0, 0, 0), 0x00aaFF));
+        //moon.getMesh().add(geometryTools.makeLine( geometryTools.vec3(0, 15, 0), geometryTools.vec3(0, 0, 0), 0xFF00aa));
+        moonAxis = (geometryTools.makeLine( geometryTools.vec3(0, 0, 10), geometryTools.vec3(0, 0, -10), 0xaaFF00));
+        //moon.getMesh().add(geometryTools.makeLine( geometryTools.vec3(15, 0, 0), geometryTools.vec3(0, 0, 0), 0x00aaFF));
         moon.orbitPoints = orbitUtils.generateElliptical(0.3, 280, 15, 5.145);
-        moon.orbitPlot = orbitUtils.plotOrbit(moon.orbitPoints);
-        this.addToScene(moon.getMesh());
+        moon.orbitPlot = orbitUtils.plotOrbit(moon.orbitPoints,0xb2b2b2);
+        addToScene(moon.getMesh());
         camera.lookAt(earth.getMesh().position);
 
     };
@@ -93,14 +100,26 @@ var Main = function(){
         renderer.render(globalVars.scene, camera);
     };
 
+    var initSceneAxes = function(axisLength){
+        sceneAxisX = (geometryTools.makeLine(geometryTools.vec3(-axisLength, 0, 0), geometryTools.vec3(axisLength, 0, 0), 0xFF0000));
+        sceneAxisY = (geometryTools.makeLine(geometryTools.vec3(0, -axisLength, 0), geometryTools.vec3(0, axisLength, 0), 0x00FF00));
+        sceneAxisZ = (geometryTools.makeLine(geometryTools.vec3(0, 0, -axisLength), geometryTools.vec3(0, 0, axisLength), 0xFF00aa));
+    };
 
     var update = function(){
-        earth.update(globalVars,guiVars);
+        earth.update(globalVars);
         sun.update(globalVars,guiVars);
-        moon.update(globalVars,guiVars,earth);
+        moon.update(globalVars,earth);
+        pausedEnabledUpdates();
+        //debugText("Earth : " + globalVars.numEarthOrbits.toString() + "  \n Moon : " + globalVars.numMoonOrbits.toString());
+    };
+
+    var pausedEnabledUpdates = function(){
         updateLight();
         UpdateGUIVars();
-        //debugText("Earth : " + globalVars.numEarthOrbits.toString() + "  \n Moon : " + globalVars.numMoonOrbits.toString());
+        updateAxes();
+        earth.updateOrbitPlots(guiVars,globalVars);
+        moon.updateOrbitPlots(guiVars,globalVars,earth);
     };
 
     var updateLight = function(){
@@ -119,16 +138,30 @@ var Main = function(){
         }
     };
 
-    function v(x,y,z){
-        return new THREE.Vector3(x,y,z);
-    }
+    var updateAxes = function(){
 
-    var makeLine = function(point1, point2, colour){
-        var lineGeometry = new THREE.Geometry(),
-            lineMat = new THREE.LineBasicMaterial({color: colour});
-        lineGeometry.vertices.push(point1, point2);
-        return new THREE.Line(lineGeometry, lineMat);
+        if(guiVars.sceneAxes){
+            addToScene(sceneAxisX);
+            addToScene(sceneAxisY);
+            addToScene(sceneAxisZ);
+        }else{
+            removeFromScene(sceneAxisX);
+            removeFromScene(sceneAxisY);
+            removeFromScene(sceneAxisZ);
+        }
+        if(guiVars.earthAxis){
+            earth.setAxisLine(earthAxis);
+        }else{
+            earth.removeAxisLine(earthAxis);
+        }
+
+        if(guiVars.moonAxis){
+            moon.setAxisLine(moonAxis);
+        }else{
+            moon.removeAxisLine(moonAxis);
+        }
     };
+
 
 
     var initShadowCam = function(){
@@ -141,17 +174,20 @@ var Main = function(){
         shadowCastingLight.shadowCameraRight = 0.5;
         shadowCastingLight.shadowCameraTop = 0.5;
         shadowCastingLight.shadowCameraBottom = -0.5;
-        globalVars.scene.add(shadowCastingLight);
+        addToScene(shadowCastingLight);
     };
 
     var initGUI = function(){
         var gui = new dat.GUI();
+        gui.add(guiVars, 'simSpeed');
         gui.add(guiVars, 'ambientLightIntensity');
         gui.add(guiVars, 'paused');
         gui.add(guiVars, 'moonOrbitTrace');
         gui.add(guiVars, 'earthOrbitTrace');
         gui.add(guiVars, 'removeSun');
-        gui.add(guiVars, 'simSpeed');
+        gui.add(guiVars, 'sceneAxes');
+        gui.add(guiVars, 'earthAxis');
+        gui.add(guiVars, 'moonAxis');
         return gui;
     };
 

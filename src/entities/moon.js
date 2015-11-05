@@ -23,15 +23,19 @@ var Moon = function(){
     };
 
     
-    this.update  = function(globalVars, guiVars, earth){
+    this.update  = function(globalVars,earth){
         this.getMesh().lookAt(earth.getMesh().position);
         this.getMesh().position.x = earth.getX() + this.orbitPoints[count].x;
         this.getMesh().position.z = earth.getZ() + this.orbitPoints[count].z;
         this.getMesh().position.y = earth.getY() + this.orbitPoints[count].y;
-
         count += Math.floor(1 * globalVars.simSpeed);
-        if(count >= this.orbitPoints.length) {count = 0; globalVars.numMoonOrbits++;}
+        if(count >= this.orbitPoints.length) {
+            count = 0; globalVars.numMoonOrbits++;
+        }
 
+    };
+
+    this.updateOrbitPlots = function(guiVars,globalVars,earth){
         if(guiVars.moonOrbitTrace){
             globalVars.scene.add(this.orbitPlot);
             this.orbitPlot.position.x = earth.getMesh().position.x;
@@ -39,9 +43,14 @@ var Moon = function(){
         }else{
             globalVars.scene.remove(this.orbitPlot);
         }
-
+    };
+    this.setAxisLine = function(line){
+        this.mesh.add(line);
     };
 
+    this.removeAxisLine = function(line){
+        this.mesh.remove(line);
+    };
 
 
 };
