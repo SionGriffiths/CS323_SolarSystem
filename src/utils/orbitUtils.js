@@ -133,4 +133,16 @@ var OrbitUtils = function(){
         }
         return vertices;
     }
+
+    this.plotOrbit = function(orbitPoints,colour){
+        var material = new THREE.LineBasicMaterial({
+            color: colour
+        });
+        var geometry = new THREE.Geometry();
+        for(var i = 0; i < orbitPoints.length; i++ ){
+            geometry.vertices.push(orbitPoints[i]);
+        }
+        return new THREE.Line(geometry, material);
+    };
+
 };
