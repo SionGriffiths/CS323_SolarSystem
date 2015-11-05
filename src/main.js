@@ -26,22 +26,12 @@ var Main = function(){
         matrixUtils = new MatrixUtils();
         geometryTools = new GeometryTools();
         globalVars.scene = new THREE.Scene();
-        camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
-        //camera.position.y = 125;
-        camera.position.z = 125;
-        camera.position.x = 125;
+        initCamera();
         initSceneAxes(100);
         ambientLight = new THREE.AmbientLight( 0xffffff );
         addToScene(ambientLight);
-        renderer = new THREE.WebGLRenderer( {antialias : true});
-        renderer.setSize( window.innerWidth, window.innerHeight );
-        renderer.shadowMap.enabled = true;
-        document.body.appendChild( renderer.domElement );
-        window.addEventListener( 'resize', onWindowResize, false );
-        controls = new THREE.OrbitControls( camera, renderer.domElement );
-        controls.enableDamping = true;
-        controls.dampingFactor = 0.25;
-        controls.enableZoom = true;
+        initRenderer();
+        initControls();
         this.initEntities();
 
         shadowCastingLight = new THREE.SpotLight(0xffffff, 1);
@@ -63,7 +53,19 @@ var Main = function(){
             window.requestAnimationFrame(drawFrame);
         }());
     };
-
+    var initRenderer = function(){
+        renderer = new THREE.WebGLRenderer( {antialias : true});
+        renderer.setSize( window.innerWidth, window.innerHeight );
+        renderer.shadowMap.enabled = true;
+        document.body.appendChild( renderer.domElement );
+        window.addEventListener( 'resize', onWindowResize, false );
+    };
+    var initControls = function(){
+        controls = new THREE.OrbitControls( camera, renderer.domElement );
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.25;
+        controls.enableZoom = true;
+    };
     var addToScene = function(entity){
         globalVars.scene.add(entity);
     };
@@ -79,21 +81,16 @@ var Main = function(){
         earth = new Earth();
         earth.init(globalVars,guiVars);
         earthAxis = (geometryTools.makeLine( geometryTools.vec3(0, 15, 0), geometryTools.vec3(0, -15, 0), 0xaa00FF));
-        //earth.getMesh().add(geometryTools.makeLine( geometryTools.vec3(0, 0, 15), geometryTools.vec3(0, 0, 0), 0xFFaa00));
-        //earth.getMesh().add(geometryTools.makeLine( geometryTools.vec3(15, 0, 0), geometryTools.vec3(0, 0, 0), 0x00FFaa));
         earth.orbitPoints = orbitUtils.generateElliptical(0.12,3650,80,0);
         earth.orbitPlot = orbitUtils.plotOrbit(earth.orbitPoints,0x00aaFF);
         addToScene(earth.getMesh());
         moon = new Moon();
         moon.init();
-        //moon.getMesh().add(geometryTools.makeLine( geometryTools.vec3(0, 15, 0), geometryTools.vec3(0, 0, 0), 0xFF00aa));
-        moonAxis = (geometryTools.makeLine( geometryTools.vec3(0, 0, 10), geometryTools.vec3(0, 0, -10), 0xaaFF00));
-        //moon.getMesh().add(geometryTools.makeLine( geometryTools.vec3(15, 0, 0), geometryTools.vec3(0, 0, 0), 0x00aaFF));
+        moonAxis = (geometryTools.makeLine( geometryTools.vec3(0, 0, 10), geometryTools.vec3(0, 0, -10), 0xE0E54E));
         moon.orbitPoints = orbitUtils.generateElliptical(0.3, 280, 15, 5.145);
         moon.orbitPlot = orbitUtils.plotOrbit(moon.orbitPoints,0xb2b2b2);
         addToScene(moon.getMesh());
         camera.lookAt(earth.getMesh().position);
-
     };
 
     var render = function(){
@@ -111,7 +108,6 @@ var Main = function(){
         sun.update(globalVars,guiVars);
         moon.update(globalVars,earth);
         pausedEnabledUpdates();
-        //debugText("Earth : " + globalVars.numEarthOrbits.toString() + "  \n Moon : " + globalVars.numMoonOrbits.toString());
     };
 
     var pausedEnabledUpdates = function(){
@@ -139,7 +135,6 @@ var Main = function(){
     };
 
     var updateAxes = function(){
-
         if(guiVars.sceneAxes){
             addToScene(sceneAxisX);
             addToScene(sceneAxisY);
@@ -154,7 +149,6 @@ var Main = function(){
         }else{
             earth.removeAxisLine(earthAxis);
         }
-
         if(guiVars.moonAxis){
             moon.setAxisLine(moonAxis);
         }else{
@@ -162,8 +156,15 @@ var Main = function(){
         }
     };
 
-
-
+    var updateCameraPosition = function(x,y,z){
+        camera.position.x = x;
+        camera.position.y = y;
+        camera.position.z = z;
+    };
+    var initCamera = function(){
+        camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
+        updateCameraPosition(125,0,125);
+    };
     var initShadowCam = function(){
         shadowCastingLight.castShadow = true;
         shadowCastingLight.shadowDarkness = 0.7;
@@ -197,18 +198,4 @@ var Main = function(){
         renderer.setSize(window.innerWidth, window.innerHeight);
         render();
     }
-
-    var debugText = function(text){
-        var text2 = document.createElement('div');
-        text2.style.position = 'absolute';
-        //text2.style.zIndex = 1;    // if you still don't see the label, try uncommenting this
-        text2.style.width = 100;
-        text2.style.height = 100;
-        text2.style.backgroundColor = "blue";
-        text2.innerHTML = text;
-        text2.style.top = 200 + 'px';
-        text2.style.left = 200 + 'px';
-        document.body.appendChild(text2);
-    }
-
 };

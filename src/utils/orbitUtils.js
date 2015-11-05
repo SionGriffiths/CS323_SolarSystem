@@ -1,7 +1,7 @@
 var OrbitUtils = function(){
 
     this.generateElliptical = function(e, periodSlices, semiMajorAxis, tiltValue){
-        var orbitPoints = [];
+
         var orbitVerts = [[],[],[]];
         var theta = 0;
         var r = 0;
@@ -14,15 +14,15 @@ var OrbitUtils = function(){
             orbitVerts[0].push(x);
             orbitVerts[1].push(0);
             orbitVerts[2].push(z);
-            //orbitPoints.push(new THREE.Vector4(x,0,z,1));
         }
-        var ret;
-            if(tiltValue != 0) {
-               ret = applyTiltToOrbit(tiltValue, orbitVerts);
-            }else {
-                ret = convertMatrixToVertices(orbitVerts);
-            }
-            return ret;
+
+
+        if(tiltValue != 0) {
+            return applyTiltToOrbit(tiltValue, orbitVerts);
+        }else {
+            return convertMatrixToVertices(orbitVerts);
+        }
+
 
 
         //return orbitPoints;
@@ -48,7 +48,7 @@ var OrbitUtils = function(){
     };
 
     var applyTiltToOrbit = function(angle, points){
-        var operationMatrix = getZRotationMatrix(angle);
+        var operationMatrix = getXRotationMatrix(angle);
         var coordinateMatrix = convertToHomogenousCoordinates(points);
         var appliedMatrix = multiplyMatrices(operationMatrix, coordinateMatrix);
         return convertMatrixToVertices(appliedMatrix);
