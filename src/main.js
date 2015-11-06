@@ -42,6 +42,7 @@ var Main = function(){
 
     this.startSim = function(){
         (function drawFrame(){
+            stats.begin();
             if(guiVars.paused) {
                 render();
                 pausedEnabledUpdates();
@@ -50,6 +51,7 @@ var Main = function(){
             }
             update();
             render();
+            stats.end();
             window.requestAnimationFrame(drawFrame);
         }());
     };
@@ -87,7 +89,7 @@ var Main = function(){
         moon = new Moon();
         moon.init();
         moonAxis = (geometryTools.makeLine( geometryTools.vec3(0, 0, 10), geometryTools.vec3(0, 0, -10), 0xE0E54E));
-        moon.orbitPoints = orbitUtils.generateElliptical(0.3, 280, 15, 5.145);
+        moon.orbitPoints = orbitUtils.generateElliptical(0.3, 280, 15, -5.145);
         moon.orbitPlot = orbitUtils.plotOrbit(moon.orbitPoints,0xb2b2b2);
         addToScene(moon.getMesh());
         camera.lookAt(earth.getMesh().position);
@@ -102,6 +104,16 @@ var Main = function(){
         sceneAxisY = (geometryTools.makeLine(geometryTools.vec3(0, -axisLength, 0), geometryTools.vec3(0, axisLength, 0), 0x00FF00));
         sceneAxisZ = (geometryTools.makeLine(geometryTools.vec3(0, 0, -axisLength), geometryTools.vec3(0, 0, axisLength), 0xFF00aa));
     };
+
+    var stats = new Stats();
+    stats.setMode( 1 ); // 0: fps, 1: ms, 2: mb
+
+// align top-left
+    stats.domElement.style.position = 'absolute';
+    stats.domElement.style.left = '0px';
+    stats.domElement.style.top = '0px';
+
+    document.body.appendChild( stats.domElement );
 
     var update = function(){
         earth.update(globalVars);

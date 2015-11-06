@@ -57,10 +57,10 @@ var OrbitUtils = function(){
     function getXRotationMatrix(angle){
         var radians = angle * (Math.PI / 180);
         return [
-            [1, 0, 1, 0],
+            [1, 0, 0, 0],
             [0, Math.cos(radians), -Math.sin(radians), 0],
-            [-Math.sin(radians), 0, Math.cos(radians), 0],
-            [0, Math.sin(radians), Math.cos(radians), 1]
+            [0,-Math.sin(radians), Math.cos(radians), 0],
+            [0, 0, 0, 1]
         ]
     }
 
