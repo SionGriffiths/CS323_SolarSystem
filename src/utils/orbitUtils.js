@@ -16,16 +16,11 @@ var OrbitUtils = function(){
             orbitVerts[2].push(z);
         }
 
-
         if(tiltValue != 0) {
             return applyTiltToOrbit(tiltValue, orbitVerts);
         }else {
             return convertMatrixToVertices(orbitVerts);
         }
-
-
-
-        //return orbitPoints;
     };
 
 
@@ -59,7 +54,7 @@ var OrbitUtils = function(){
         return [
             [1, 0, 0, 0],
             [0, Math.cos(radians), -Math.sin(radians), 0],
-            [0,-Math.sin(radians), Math.cos(radians), 0],
+            [0,Math.sin(radians), Math.cos(radians), 0],
             [0, 0, 0, 1]
         ]
     }
