@@ -1,0 +1,101 @@
+\documentclass[titlepage]{article}
+
+\addtolength{\oddsidemargin}{-.875in}
+\addtolength{\evensidemargin}{-.875in}
+\addtolength{\textwidth}{1.75in}
+
+\addtolength{\topmargin}{-.875in}
+\addtolength{\textheight}{1.75in}
+
+
+\usepackage[font=footnotesize]{caption}
+\usepackage{verbatim}
+\usepackage[section]{placeins}
+\usepackage{graphicx}
+
+
+
+% --- XML Highlighting ---
+\usepackage{listings}
+
+\usepackage{color}
+\definecolor{gray}{rgb}{0.4,0.4,0.4}
+\definecolor{darkblue}{rgb}{0.0,0.0,0.6}
+\definecolor{cyan}{rgb}{0.0,0.6,0.6}
+
+\lstset{
+	basicstyle=\ttfamily,
+	columns=fullflexible,
+	showstringspaces=false,
+	commentstyle=\color{gray}\upshape
+}
+
+\lstdefinelanguage{XML}
+{
+	morestring=[b]",
+	morestring=[s]{>}{<},
+	morecomment=[s]{<?}{?>},
+	stringstyle=\color{black},
+	identifierstyle=\color{darkblue},
+	keywordstyle=\color{cyan},
+	morekeywords={xmlns,version,type}% list your attributes here
+}
+% --- ---- ---
+
+
+
+% Title Page
+\title{CS323 Assignment Report}
+\author{Sion Griffiths - sig2}
+
+
+% This just adds lines between paragraphs
+\usepackage[parfill]{parskip}
+
+%This allows diagrams to be added
+\usepackage{graphicx}
+
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+
+
+
+\newpage
+\section{Introduction}
+
+This report will detail the 
+
+\section{Basic Tasks}
+\subsection{The earth orbits the centre of the sun}
+
+
+\section{Orbits and Axes}
+\subsection{Earth}
+\subsection{Moon}
+
+\section{Lighting}
+
+
+
+ \begin{thebibliography}{1}
+ 	
+ 	\bibitem{replyBuy} David Uccelli, Multichannel Blog {\em http://www.multichannel-blog.co.uk/2012/02/13/80-of-portaltech-uk-hybris-partner-bought-for-1-6m/} Accessed September 2015
+ 	\bibitem{growthGraph} Reply LTD, Company profile {\em http://www.reply.eu/InvestorsDocuments/en/Company\_Profile\_eng.pdf} Accessed September 2015
+ 	\bibitem{stock} Google Finance, Reply S.p.A profile {\em https://www.google.co.uk/finance?q=BIT\%3AREY} Accessed September 2015
+ 	
+ 	
+ 	
+ 	
+ 		
+ %	\bibitem{hoover} Dun \& Bradstreet, Hoover.com - Corporate Data Analyser and Aggregator {\em http://bit.ly/1Dj9e1m }
+
+	
+
+
+ \end{thebibliography}
+
+
+\end{document}
