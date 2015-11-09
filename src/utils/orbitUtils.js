@@ -1,4 +1,6 @@
-var OrbitUtils = function(){
+var OrbitUtils = function(matUtils){
+
+    var matrixUtils = matUtils;
 
     this.generateElliptical = function(e, periodSlices, semiMajorAxis, tiltValue){
 
@@ -19,7 +21,7 @@ var OrbitUtils = function(){
         if(tiltValue != 0) {
             return applyTiltToOrbit(tiltValue, orbitVerts);
         }else {
-            return convertMatrixToVertices(orbitVerts);
+            return matrixUtils.convertMatrixToVertices(orbitVerts);
         }
     };
 
@@ -43,91 +45,11 @@ var OrbitUtils = function(){
     };
 
     var applyTiltToOrbit = function(angle, points){
-        var operationMatrix = getXRotationMatrix(angle);
-        var coordinateMatrix = convertToHomogenousCoordinates(points);
-        var appliedMatrix = multiplyMatrices(operationMatrix, coordinateMatrix);
-        return convertMatrixToVertices(appliedMatrix);
+        var operationMatrix =  matrixUtils.getXRotationMatrix(angle);
+        var coordinateMatrix =  matrixUtils.convertToHomogenousCoordinates(points);
+        var appliedMatrix =  matrixUtils.multiplyMatrices(operationMatrix, coordinateMatrix);
+        return  matrixUtils.convertMatrixToVertices(appliedMatrix);
     };
-
-    function getXRotationMatrix(angle){
-        var radians = angle * (Math.PI / 180);
-        return [
-            [1, 0, 0, 0],
-            [0, Math.cos(radians), -Math.sin(radians), 0],
-            [0,Math.sin(radians), Math.cos(radians), 0],
-            [0, 0, 0, 1]
-        ]
-    }
-
-    function getZRotationMatrix(angle){
-        var radians = angle * (Math.PI / 180);
-        return [
-            [Math.cos(radians), -Math.sin(radians), 0, 0],
-            [Math.sin(radians), Math.cos(radians), 0, 0],
-            [0, 0, 1, 0],
-            [0, 0, 0, 1]
-        ]
-    }
-
-    function getYRotationMatrix(angle){
-        var radians = angle * (Math.PI / 180);
-        return [
-            [Math.cos(radians), 0, Math.sin(radians), 0],
-            [0, 1, 0, 0],
-            [-Math.sin(radians), 0, Math.cos(radians), 0],
-            [0, 0, 0, 1]
-        ]
-    }
-
-    function convertToHomogenousCoordinates(dataPoints){
-        var numVerticies = dataPoints[0].length;
-        var homoRow = [];
-        for (var i = 0; i < numVerticies; i++){
-            homoRow.push(1);
-        }
-        dataPoints.push(homoRow);
-        return dataPoints;
-    }
-
-
-    function multiplyMatrices(first, second){
-        var sum = 0;
-        var resultMatrix = [[]];
-        var m = first.length;
-        var q = second[0].length;
-        var p = second.length;
-        initialiseResultMatrix(resultMatrix, m, p);
-        for (var c = 0; c < m; c++)
-        {
-            for (var d = 0; d < q; d++)
-            {
-                for (var k = 0; k < p; k++)
-                {
-                    sum = sum + first[c][k] * second[k][d];
-                }
-                resultMatrix[c][d] = sum;
-                sum = 0;
-            }
-        }
-        return resultMatrix;
-    }
-
-    function initialiseResultMatrix(resultMatrix, m, p){
-        for (var i = 0; i < m; i++){
-            resultMatrix[i] = [];
-            for (var ii = 0; ii < p; ii++){
-                resultMatrix[i][ii] = 0;
-            }
-        }
-        return resultMatrix;
-    }
-    function convertMatrixToVertices(matrix){
-        var vertices = [];
-        for (var i = 0; i < matrix[0].length; i++){
-            vertices.push(new THREE.Vector3(matrix[0][i], matrix[1][i], matrix[2][i]));
-        }
-        return vertices;
-    }
 
     this.plotOrbit = function(orbitPoints,colour){
         var material = new THREE.LineBasicMaterial({

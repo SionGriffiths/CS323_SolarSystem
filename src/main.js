@@ -2,7 +2,7 @@
 var Main = function(){
 
     var camera,renderer,earth,sun,moon,globalVars,orbitUtils,
-        moonOrbitPoints,matrixUtils,shadowCastingLight,
+        matrixUtils,shadowCastingLight,
         controls,ambientLight,gui,geometryTools,sceneAxisX,
         sceneAxisY,sceneAxisZ,earthAxis,moonAxis;
     var ambientIntensityInitial = 1;
@@ -22,8 +22,8 @@ var Main = function(){
 
     this.initSim = function(){
         globalVars = new GlobalVars();
-        orbitUtils = new OrbitUtils();
         matrixUtils = new MatrixUtils();
+        orbitUtils = new OrbitUtils(matrixUtils);
         geometryTools = new GeometryTools();
         globalVars.scene = new THREE.Scene();
         initCamera();
@@ -33,7 +33,6 @@ var Main = function(){
         initRenderer();
         initControls();
         this.initEntities();
-
         shadowCastingLight = new THREE.SpotLight(0xffffff, 1);
         initShadowCam();
         addToScene(shadowCastingLight);
