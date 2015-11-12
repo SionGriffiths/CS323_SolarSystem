@@ -2,7 +2,7 @@
 var Main = function(){
 
     var camera,renderer,earth,sun,moon,globalVars,orbitUtils,
-        matrixUtils,shadowCastingLight,
+        matrixUtils,shadowLight,
         controls,ambientLight,gui,geometryTools,sceneAxisX,
         sceneAxisY,sceneAxisZ,earthAxis,moonAxis;
     var ambientIntensityInitial = 1;
@@ -28,14 +28,14 @@ var Main = function(){
         globalVars.scene = new THREE.Scene();
         initCamera();
         initSceneAxes(100);
-        ambientLight = new THREE.AmbientLight( 0xffffff );
+        ambientLight = new THREE.AmbientLight(0xffffff);
         addToScene(ambientLight);
         initRenderer();
         initControls();
         this.initEntities();
-        shadowCastingLight = new THREE.SpotLight(0xffffff, 1);
+        shadowLight = new THREE.SpotLight(0xffffff, 1);
         initShadowCam();
-        addToScene(shadowCastingLight);
+        addToScene(shadowLight);
         gui = initGUI();
     };
 
@@ -54,11 +54,13 @@ var Main = function(){
             window.requestAnimationFrame(drawFrame);
         }());
     };
+
     var initRenderer = function(){
         renderer = new THREE.WebGLRenderer( {antialias : true});
         renderer.setSize( window.innerWidth, window.innerHeight );
         renderer.shadowMap.enabled = true;
-        document.body.appendChild( renderer.domElement );
+        //document.body.appendChild( renderer.domElement );
+        $("#scene").append(renderer.domElement);
         window.addEventListener( 'resize', onWindowResize, false );
     };
     var initControls = function(){
@@ -130,7 +132,7 @@ var Main = function(){
     };
 
     var updateLight = function(){
-        shadowCastingLight.target = earth.getMesh();
+        shadowLight.target = earth.getMesh();
         ambientLight.color.setRGB(ambientIntensityInitial,ambientIntensityInitial,ambientIntensityInitial);
     };
 
@@ -177,16 +179,16 @@ var Main = function(){
         updateCameraPosition(125,0,125);
     };
     var initShadowCam = function(){
-        shadowCastingLight.castShadow = true;
-        shadowCastingLight.shadowDarkness = 0.7;
-        shadowCastingLight.shadowCameraVisible = false;
-        shadowCastingLight.shadowCameraNear = 20;
-        shadowCastingLight.shadowCameraFar = 500;
-        shadowCastingLight.shadowCameraLeft = -0.5;
-        shadowCastingLight.shadowCameraRight = 0.5;
-        shadowCastingLight.shadowCameraTop = 0.5;
-        shadowCastingLight.shadowCameraBottom = -0.5;
-        addToScene(shadowCastingLight);
+        shadowLight.castShadow = true;
+        shadowLight.shadowDarkness = 0.7;
+        shadowLight.shadowCameraVisible = false;
+        //shadowLight.shadowCameraNear = 20;
+        //shadowLight.shadowCameraFar = 500;
+        shadowLight.shadowCameraLeft = -0.5;
+        shadowLight.shadowCameraRight = 0.5;
+        shadowLight.shadowCameraTop = 0.5;
+        shadowLight.shadowCameraBottom = -0.5;
+        addToScene(shadowLight);
     };
 
     var initGUI = function(){
@@ -203,7 +205,7 @@ var Main = function(){
         return gui;
     };
 
-    function onWindowResize() {
+   var onWindowResize = function(){
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);

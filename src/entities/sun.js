@@ -17,7 +17,7 @@ var Sun = function(){
 
     this.update = function(globalVars,guiVars) {
 
-        this.getMesh().rotation.y += 1 / 64 * globalVars.simSpeed;
+        this.getMesh().rotation.y -= 1 / 64 * globalVars.simSpeed;
         if (guiVars.removeSun) {
             globalVars.scene.remove(this.getMesh());
         } else {
