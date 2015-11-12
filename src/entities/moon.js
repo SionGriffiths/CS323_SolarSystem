@@ -7,8 +7,8 @@ var Moon = function(){
     this.orbitPlot = null;
     var count =0;
     
-    this.init = function(x,y,z){
-        this.geometry = new THREE.SphereGeometry(2, 32, 32);
+    this.init = function(){
+        this.geometry = new THREE.SphereGeometry(1, 32, 32);
         this.material = new THREE.MeshPhongMaterial();
         this.material.map = THREE.ImageUtils.loadTexture('assets/images/moonmap1k.jpg');
         this.mesh = new THREE.Mesh(this.geometry, this.material);

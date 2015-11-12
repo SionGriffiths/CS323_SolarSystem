@@ -4,8 +4,8 @@ var Main = function(){
     var camera,renderer,earth,sun,moon,globalVars,orbitUtils,
         matrixUtils,shadowLight,
         controls,ambientLight,gui,geometryTools,sceneAxisX,
-        sceneAxisY,sceneAxisZ,earthAxis,moonAxis;
-    var ambientIntensityInitial = 1;
+        sceneAxisY,sceneAxisZ,earthAxis = [],moonAxes = [],ambientIntensityInitial = 1;
+
 
 
     var guiVars = {
@@ -83,14 +83,18 @@ var Main = function(){
         addToScene(sun.getMesh());
         earth = new Earth();
         earth.init(globalVars,guiVars);
-        earthAxis = (geometryTools.makeLine( geometryTools.vec3(0, 15, 0), geometryTools.vec3(0, -15, 0), 0xaa00FF));
+        earthAxis[0] = (geometryTools.makeLine( geometryTools.vec3(0, 15, 0), geometryTools.vec3(0, -15, 0), 0xaa00FF));
+        earthAxis[1] = (geometryTools.makeLine( geometryTools.vec3(0, 0, 15), geometryTools.vec3(0, 0, -15), 0xFFaa00));
+        //earthAxis[2] = (geometryTools.makeLine( geometryTools.vec3(0, 15, 0), geometryTools.vec3(0, -15, 0), 0xaa00FF));
         earth.orbitPoints = orbitUtils.generateElliptical(0.12,3650,80,0);
         earth.orbitPlot = orbitUtils.plotOrbit(earth.orbitPoints,0x00aaFF);
         addToScene(earth.getMesh());
         moon = new Moon();
         moon.init();
-        moonAxis = (geometryTools.makeLine( geometryTools.vec3(0, 0, 10), geometryTools.vec3(0, 0, -10), 0xE0E54E));
-        moon.orbitPoints = orbitUtils.generateElliptical(0.3, 280, 15, -5.145);
+        moonAxes[0] = (geometryTools.makeLine( geometryTools.vec3(0, 0, 10), geometryTools.vec3(0, 0, -10), 0xE0E54E));
+        moonAxes[1] = (geometryTools.makeLine( geometryTools.vec3(0, -10, 0), geometryTools.vec3(0, 10, 0), 0x4EE0E5));
+        //moonAxes[0] = (geometryTools.makeLine( geometryTools.vec3(0, 0, 10), geometryTools.vec3(0, 0, -10), 0xE0E54E));
+        moon.orbitPoints = orbitUtils.generateElliptical(0.3, 280, 10, -5.145);
         moon.orbitPlot = orbitUtils.plotOrbit(moon.orbitPoints,0xb2b2b2);
         addToScene(moon.getMesh());
         camera.lookAt(earth.getMesh().position);
@@ -158,14 +162,18 @@ var Main = function(){
             removeFromScene(sceneAxisZ);
         }
         if(guiVars.earthAxis){
-            earth.setAxisLine(earthAxis);
+            earth.setAxisLine(earthAxis[0]);
+            earth.setAxisLine(earthAxis[1]);
         }else{
-            earth.removeAxisLine(earthAxis);
+            earth.removeAxisLine(earthAxis[0]);
+            earth.removeAxisLine(earthAxis[1]);
         }
         if(guiVars.moonAxis){
-            moon.setAxisLine(moonAxis);
+            moon.setAxisLine(moonAxes[0]);
+            moon.setAxisLine(moonAxes[1]);
         }else{
-            moon.removeAxisLine(moonAxis);
+            moon.removeAxisLine(moonAxes[0]);
+            moon.removeAxisLine(moonAxes[1]);
         }
     };
 
