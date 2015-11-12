@@ -3,8 +3,7 @@ var Main = function(){
 
     var camera,renderer,earth,sun,moon,globalVars,orbitUtils,
         matrixUtils,shadowLight,
-        controls,ambientLight,gui,geometryTools,sceneAxisX,
-        sceneAxisY,sceneAxisZ,earthAxis = [],moonAxes = [],ambientIntensityInitial = 1;
+        controls,ambientLight,gui,geometryTools,sceneAxes = [],earthAxis = [],moonAxes = [],ambientIntensityInitial = 1;
 
 
 
@@ -15,8 +14,8 @@ var Main = function(){
         removeSun : false,
         paused : false,
         sceneAxes : false,
-        earthAxis : false,
-        moonAxis : false,
+        earthAxes : false,
+        moonAxes : false,
         simSpeed : 1
     };
 
@@ -41,7 +40,7 @@ var Main = function(){
 
     this.startSim = function(){
         (function drawFrame(){
-            stats.begin();
+            //stats.begin();
             if(guiVars.paused) {
                 render();
                 pausedEnabledUpdates();
@@ -50,7 +49,7 @@ var Main = function(){
             }
             update();
             render();
-            stats.end();
+            //stats.end();
             window.requestAnimationFrame(drawFrame);
         }());
     };
@@ -83,17 +82,13 @@ var Main = function(){
         addToScene(sun.getMesh());
         earth = new Earth();
         earth.init(globalVars,guiVars);
-        earthAxis[0] = (geometryTools.makeLine( geometryTools.vec3(0, 15, 0), geometryTools.vec3(0, -15, 0), 0xaa00FF));
-        earthAxis[1] = (geometryTools.makeLine( geometryTools.vec3(0, 0, 15), geometryTools.vec3(0, 0, -15), 0xFFaa00));
-        //earthAxis[2] = (geometryTools.makeLine( geometryTools.vec3(0, 15, 0), geometryTools.vec3(0, -15, 0), 0xaa00FF));
+        earthAxis = geometryTools.makeLines(15, false, 0x00AFFA, 0xFA00AF, 0xAFFA00);
         earth.orbitPoints = orbitUtils.generateElliptical(0.12,3650,80,0);
-        earth.orbitPlot = orbitUtils.plotOrbit(earth.orbitPoints,0x00aaFF);
+        earth.orbitPlot = orbitUtils.plotOrbit(earth.orbitPoints,0xffd3ff);
         addToScene(earth.getMesh());
         moon = new Moon();
         moon.init();
-        moonAxes[0] = (geometryTools.makeLine( geometryTools.vec3(0, 0, 10), geometryTools.vec3(0, 0, -10), 0xE0E54E));
-        moonAxes[1] = (geometryTools.makeLine( geometryTools.vec3(0, -10, 0), geometryTools.vec3(0, 10, 0), 0x4EE0E5));
-        //moonAxes[0] = (geometryTools.makeLine( geometryTools.vec3(0, 0, 10), geometryTools.vec3(0, 0, -10), 0xE0E54E));
+        moonAxes = geometryTools.makeLines(10,false,0x59242A, 0xF2B96E, 0x647D50);
         moon.orbitPoints = orbitUtils.generateElliptical(0.3, 280, 10, -5.145);
         moon.orbitPlot = orbitUtils.plotOrbit(moon.orbitPoints,0xb2b2b2);
         addToScene(moon.getMesh());
@@ -105,20 +100,8 @@ var Main = function(){
     };
 
     var initSceneAxes = function(axisLength){
-        sceneAxisX = (geometryTools.makeLine(geometryTools.vec3(-axisLength, 0, 0), geometryTools.vec3(axisLength, 0, 0), 0xFF0000));
-        sceneAxisY = (geometryTools.makeLine(geometryTools.vec3(0, -axisLength, 0), geometryTools.vec3(0, axisLength, 0), 0x00FF00));
-        sceneAxisZ = (geometryTools.makeLine(geometryTools.vec3(0, 0, -axisLength), geometryTools.vec3(0, 0, axisLength), 0xFF00aa));
+        sceneAxes = geometryTools.makeLines(axisLength, true, 0x5CA788, 0xD4D35D, 0xEF6A6B);
     };
-
-    var stats = new Stats();
-    stats.setMode( 1 ); // 0: fps, 1: ms, 2: mb
-
-// align top-left
-    stats.domElement.style.position = 'absolute';
-    stats.domElement.style.left = '0px';
-    stats.domElement.style.top = '0px';
-
-    document.body.appendChild( stats.domElement );
 
     var update = function(){
         earth.update(globalVars);
@@ -153,27 +136,23 @@ var Main = function(){
 
     var updateAxes = function(){
         if(guiVars.sceneAxes){
-            addToScene(sceneAxisX);
-            addToScene(sceneAxisY);
-            addToScene(sceneAxisZ);
+            $.each( sceneAxes, function( key, line ) {
+                addToScene(line);
+            });
         }else{
-            removeFromScene(sceneAxisX);
-            removeFromScene(sceneAxisY);
-            removeFromScene(sceneAxisZ);
+            $.each( sceneAxes, function( key, line ) {
+               removeFromScene(line);
+            });
         }
-        if(guiVars.earthAxis){
-            earth.setAxisLine(earthAxis[0]);
-            earth.setAxisLine(earthAxis[1]);
+        if(guiVars.earthAxes){
+            earth.setAxisLine(earthAxis);
         }else{
-            earth.removeAxisLine(earthAxis[0]);
-            earth.removeAxisLine(earthAxis[1]);
+            earth.removeAxisLine(earthAxis);
         }
-        if(guiVars.moonAxis){
-            moon.setAxisLine(moonAxes[0]);
-            moon.setAxisLine(moonAxes[1]);
+        if(guiVars.moonAxes){
+            moon.setAxisLine(moonAxes);
         }else{
-            moon.removeAxisLine(moonAxes[0]);
-            moon.removeAxisLine(moonAxes[1]);
+            moon.removeAxisLine(moonAxes);
         }
     };
 
@@ -190,8 +169,6 @@ var Main = function(){
         shadowLight.castShadow = true;
         shadowLight.shadowDarkness = 0.7;
         shadowLight.shadowCameraVisible = false;
-        //shadowLight.shadowCameraNear = 20;
-        //shadowLight.shadowCameraFar = 500;
         shadowLight.shadowCameraLeft = -0.5;
         shadowLight.shadowCameraRight = 0.5;
         shadowLight.shadowCameraTop = 0.5;
@@ -208,8 +185,8 @@ var Main = function(){
         gui.add(guiVars, 'earthOrbitTrace');
         gui.add(guiVars, 'removeSun');
         gui.add(guiVars, 'sceneAxes');
-        gui.add(guiVars, 'earthAxis');
-        gui.add(guiVars, 'moonAxis');
+        gui.add(guiVars, 'earthAxes');
+        gui.add(guiVars, 'moonAxes');
         return gui;
     };
 
@@ -218,5 +195,17 @@ var Main = function(){
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
         render();
-    }
+    };
+
+//
+//    var stats = new Stats();
+//    stats.setMode( 1 ); // 0: fps, 1: ms, 2: mb
+//
+//// align top-left
+//    stats.domElement.style.position = 'absolute';
+//    stats.domElement.style.left = '0px';
+//    stats.domElement.style.top = '0px';
+//
+//    document.body.appendChild( stats.domElement );
+
 };

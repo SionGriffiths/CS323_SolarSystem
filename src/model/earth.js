@@ -27,7 +27,7 @@ var Earth = function(){
 
     this.update = function(){
       var speed =  this.globalVars.simSpeed;
-        this.mesh.rotation.y  += (this.globalVars.earthRotationSpeed*speed)*0.1;
+        this.mesh.rotation.y  -= (this.globalVars.earthRotationSpeed*speed)*0.1;
         this.mesh.position.z = this.orbitPoints[count].z;
         this.mesh.position.x = this.orbitPoints[count].x;
 
@@ -48,11 +48,17 @@ var Earth = function(){
     };
 
     this.setAxisLine = function(line){
-        this.mesh.add(line);
+        var self = this;
+        $.each( line, function( key, value ) {
+            self.mesh.add(value);
+        });
     };
 
     this.removeAxisLine = function(line){
-        this.mesh.remove(line);
+        var self = this;
+        $.each( line, function( key, value ) {
+            self.mesh.remove(value);
+        });
     };
 
     this.getX = function(){

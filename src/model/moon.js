@@ -44,12 +44,19 @@ var Moon = function(){
             globalVars.scene.remove(this.orbitPlot);
         }
     };
+
     this.setAxisLine = function(line){
-        this.mesh.add(line);
+        var self = this;
+        $.each( line, function( key, value ) {
+            self.mesh.add(value);
+        });
     };
 
     this.removeAxisLine = function(line){
-        this.mesh.remove(line);
+        var self = this;
+        $.each( line, function( key, value ) {
+            self.mesh.remove(value);
+        });
     };
 
 
