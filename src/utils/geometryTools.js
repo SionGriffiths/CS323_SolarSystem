@@ -11,19 +11,15 @@ var GeometryTools = function() {
         return new THREE.Line(lineGeometry, lineMat);
     };
 
-
     this.makeLines = function (length, doubleside, col1, col2, col3) {
         var lines = [];
         var p2 = 0;
-
         if (doubleside) {
             p2 = length;
         }
-
         lines.push(makeLine(vec3(length, 0, 0), vec3(-p2, 0, 0), col1));
         lines.push(makeLine(vec3(0, length, 0), vec3(0, -p2, 0), col2));
         lines.push(makeLine(vec3(0, 0, length), vec3(0, 0, -p2), col3));
-
         return lines;
     };
 

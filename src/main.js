@@ -5,7 +5,7 @@ var Main = function(){
         controls,ambientLight,gui,geometryTools,sceneAxes = [],earthAxis = [],moonAxes = [],ambientIntensityInitial = 1;
 
     var guiVars = {
-        ambientLightIntensity : 1,
+        ambientLightIntensity : 0.2,
         moonOrbitTrace : false,
         earthOrbitTrace : false,
         removeSun : false,
@@ -102,8 +102,9 @@ var Main = function(){
     };
 
     var update = function(){
+
         earth.update(globalVars);
-        sun.update(globalVars,guiVars);
+        sun.update(guiVars);
         moon.update(globalVars,earth);
         pausedEnabledUpdates();
     };

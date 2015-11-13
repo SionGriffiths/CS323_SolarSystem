@@ -4,7 +4,7 @@ function deg2rad (angle){
     return angle * (Math.PI / 180);
 }
 
- function getXRotationMatrix (angle){
+function getXRotationMatrix (angle){
     var radians = deg2rad(angle);
     return [
         [1, 0, 0, 0],
@@ -14,7 +14,7 @@ function deg2rad (angle){
     ]
 }
 
- function getZRotationMatrix (angle){
+function getZRotationMatrix (angle){
     var radians = deg2rad(angle);
     return [
         [Math.cos(radians), -Math.sin(radians), 0, 0],
@@ -58,50 +58,45 @@ function getYRotationMatrixAsMat4 (angle){
     return mat4;
 }
 
-function convertToHomogenousCoordinates(dataPoints){
-    var numVerticies = dataPoints[0].length;
-    var homoRow = [];
-    for (var i = 0; i < numVerticies; i++){
-        homoRow.push(1);
+function physicalToHomoCoords(vertPoints){
+    vertPoints[3] = [];
+    for (var i = 0; i < vertPoints[0].length; i++){
+        vertPoints[3][i]=1;
     }
-    dataPoints.push(homoRow);
-    return dataPoints;
+    return vertPoints;
 }
 
+function multiplyMatrices(matA, matB){
 
-function multiplyMatrices(first, second){
-    var sum = 0;
-    var resultMatrix = [[]];
-    var m = first.length;
-    var q = second[0].length;
-    var p = second.length;
-    this.initialiseResultMatrix(resultMatrix, m);
-    for (var c = 0; c < m; c++)
-    {
-        for (var d = 0; d < q; d++)
-        {
-            for (var k = 0; k < p; k++)
-            {
-                sum = sum + first[c][k] * second[k][d];
+    var result = initMatrix(matA,matB);
+
+    for(var row=0; row < matB.length; row++){
+        for(var col=0; col < matB[0].length; col++){
+            for(var i=0; i < matA[0].length; i++){
+                result[row][col] += (matA[row][i] * matB[i][col]);
             }
-            resultMatrix[c][d] = sum;
-            sum = 0;
         }
     }
-    return resultMatrix;
+
+    return result;
+
 }
 
- function initialiseResultMatrix (resultMatrix, m){
-    for (var i = 0; i < m; i++){
-        resultMatrix[i] = [];
+function initMatrix(matA,matB){
+    var newMat = [];
+    for(var i = 0; i < matA.length; i++){
+        newMat[i] = [];
+        for(var j = 0; j < matB[0].length; j++){
+            newMat[i][j] = 0;
+        }
     }
-    return resultMatrix;
+    return newMat;
 }
 
-function convertMatrixToVertices(matrix){
+function getVertDataFromMatrix(mat){
     var vertices = [];
-    for (var i = 0; i < matrix[0].length; i++){
-        vertices.push(new THREE.Vector3(matrix[0][i], matrix[1][i], matrix[2][i]));
+    for (var i = 0; i < mat[0].length; i++){
+        vertices.push(new THREE.Vector3(mat[0][i], mat[1][i], mat[2][i]));
     }
     return vertices;
 }

@@ -1,6 +1,4 @@
-var OrbitUtils = function(matUtils){
-
-
+var OrbitUtils = function(){
 
     this.generateElliptical = function(e, periodSlices, semiMajorAxis, tiltValue){
 
@@ -23,7 +21,7 @@ var OrbitUtils = function(matUtils){
         if(tiltValue != 0) {
             return applyTiltToOrbit(tiltValue, orbitVerts);
         }else {
-            return convertMatrixToVertices(orbitVerts);
+            return getVertDataFromMatrix(orbitVerts);
         }
     };
 
@@ -46,10 +44,10 @@ var OrbitUtils = function(matUtils){
     };
 
     var applyTiltToOrbit = function(angle, points){
-        var operationMatrix =  getXRotationMatrix(angle);
-        var coordinateMatrix =  convertToHomogenousCoordinates(points);
-        var appliedMatrix =  multiplyMatrices(operationMatrix, coordinateMatrix);
-        return  convertMatrixToVertices(appliedMatrix);
+        var tiltRotation =  getXRotationMatrix(angle);
+        var coordinates =  physicalToHomoCoords(points);
+        var transform =  multiplyMatrices(tiltRotation, coordinates);
+        return  getVertDataFromMatrix(transform);
     };
 
     this.plotOrbit = function(orbitPoints,colour){

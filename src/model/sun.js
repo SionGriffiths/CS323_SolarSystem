@@ -5,6 +5,7 @@ var Sun = function(){
     this.mesh = null;
     this.rotMatrix = null;
     this.globalVars = null;
+    this.numRots = 0;
 
     this.init = function(globalVars){
         this.geometry = new THREE.SphereGeometry(14, 32, 32);
@@ -20,37 +21,40 @@ var Sun = function(){
 
     this.update = function(guiVars) {
 
-        this.getMesh().applyMatrix(computeRotationMatrix(this.globalVars));
         if (guiVars.removeSun) {
             this.globalVars.scene.remove(this.getMesh());
+            console.log('remove');
         } else {
             this.globalVars.scene.add(this.getMesh());
+            console.log('add');
+        }
+
+        this.getMesh().applyMatrix(this.computeRotationMatrix(this.globalVars));
+
+    };
+
+
+    var currads = 0;
+
+    this.calcDays = function(radsAmount){
+        currads += radsAmount;
+        if(currads >= 2 * Math.PI){
+            var tmp = currads - 2 * Math.PI;
+            currads = 0;
+            currads += tmp;
+            this.numRots++;
+            $("#sunRotations").text("Sun Rotations : " + this.numRots);
         }
     };
 
-
-    var computeRotationMatrix = function(globalVars){
+    this.computeRotationMatrix = function(globalVars){
     //13.52
         var annualRotations = (globalVars.numIterationsInYear/13.52);
         var rotValue = 360/annualRotations*globalVars.simSpeed;
-        return getYRot(radians(rotValue));
+        this.calcDays(deg2rad(rotValue));
+        return getYRotationMatrixAsMat4(rotValue);
     };
 
 
-    var getYRot = function (radians){
-        //var radians = angle * (Math.PI / 180);
-        var mat4 = new THREE.Matrix4();
-        var s = Math.sin(radians);
-        var c = Math.cos(radians);
-        mat4.set(
-            c, 0, s, 0,
-            0, 1, 0, 0,
-            -s, 0, c, 0,
-            0, 0, 0, 1
-        );
-        return mat4;
-    };
-    var radians = function (degrees) {
-        return degrees * (Math.PI / 180);
-    };
+
 };

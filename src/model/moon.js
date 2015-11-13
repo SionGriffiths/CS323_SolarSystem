@@ -32,6 +32,7 @@ var Moon = function(){
         //count++;
         if(count >= this.orbitPoints.length) {
             count = 0; globalVars.numMoonOrbits++;
+            $("#moonOrbits").text("Moon Orbits : " + globalVars.numMoonOrbits);
         }
 
     };
