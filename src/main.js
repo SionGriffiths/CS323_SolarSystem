@@ -1,11 +1,8 @@
 
 var Main = function(){
 
-    var camera,renderer,earth,sun,moon,globalVars,orbitUtils,
-        matrixUtils,shadowLight,
+    var camera,renderer,earth,sun,moon,globalVars,orbitUtils,shadowLight,
         controls,ambientLight,gui,geometryTools,sceneAxes = [],earthAxis = [],moonAxes = [],ambientIntensityInitial = 1;
-
-
 
     var guiVars = {
         ambientLightIntensity : 1,
@@ -16,13 +13,12 @@ var Main = function(){
         sceneAxes : false,
         earthAxes : false,
         moonAxes : false,
-        simSpeed : 2
+        simSpeed : 1
     };
 
     this.initSim = function(){
         globalVars = new GlobalVars();
-        matrixUtils = new MatrixUtils();
-        orbitUtils = new OrbitUtils(matrixUtils);
+        orbitUtils = new OrbitUtils();
         geometryTools = new GeometryTools();
         globalVars.scene = new THREE.Scene();
         initCamera();
@@ -47,7 +43,6 @@ var Main = function(){
                 window.requestAnimationFrame(drawFrame);
                 return;
             }
-
             update();
             render();
             //stats.end();
@@ -59,10 +54,10 @@ var Main = function(){
         renderer = new THREE.WebGLRenderer( {antialias : true});
         renderer.setSize( window.innerWidth, window.innerHeight );
         renderer.shadowMap.enabled = true;
-        //document.body.appendChild( renderer.domElement );
         $("#scene").append(renderer.domElement);
         window.addEventListener( 'resize', onWindowResize, false );
     };
+
     var initControls = function(){
         controls = new THREE.OrbitControls( camera, renderer.domElement );
         controls.enableDamping = true;
@@ -108,7 +103,6 @@ var Main = function(){
 
     var update = function(){
         earth.update(globalVars);
-        //sun.getMesh().applyMatrix(matrixUtils.getYRotationMatrix(orbitUtils.radianOrbitalStep(27*30)));
         sun.update(globalVars,guiVars);
         moon.update(globalVars,earth);
         pausedEnabledUpdates();
@@ -202,15 +196,5 @@ var Main = function(){
         render();
     };
 
-//
-//    var stats = new Stats();
-//    stats.setMode( 1 ); // 0: fps, 1: ms, 2: mb
-//
-//// align top-left
-//    stats.domElement.style.position = 'absolute';
-//    stats.domElement.style.left = '0px';
-//    stats.domElement.style.top = '0px';
-//
-//    document.body.appendChild( stats.domElement );
 
 };

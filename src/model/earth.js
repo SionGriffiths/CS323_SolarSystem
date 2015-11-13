@@ -14,7 +14,7 @@ var Earth = function(){
     this.numDays = 0;
     this.pointsInDay = 0;
     var rotValue = 0;
-var temp = 0;
+
 
     this.init = function(globalVars,guiVars){
         this.geometry = new THREE.SphereGeometry(4, 128, 128);
@@ -30,10 +30,9 @@ var temp = 0;
         this.pointsInDay = (this.orbitPoints.length/365.26);
         console.log(this.pointsInDay);
         rotValue = 360/this.pointsInDay*globalVars.simSpeed;
-        this.rotationMatrix = getYRot(radians(rotValue));
-        temp = radians(rotValue);
-        this.axialTiltMatrix = getRotZ(radians(23.4));
-        this.removeAxialTiltMatrix = getRotZ(radians(-23.4));
+        this.rotationMatrix = getYRotationMatrixAsMat4(rotValue);
+        this.axialTiltMatrix = getZRotationMatrixAsMat4(23.4);
+        this.removeAxialTiltMatrix = getZRotationMatrixAsMat4(-23.4);
         this.mesh.applyMatrix(this.axialTiltMatrix);
     };
 
@@ -57,7 +56,7 @@ var temp = 0;
 
     this.update = function(){
         rotValue = 360/this.pointsInDay*this.globalVars.simSpeed;
-        this.rotationMatrix = getYRot(radians(rotValue));
+        this.rotationMatrix = getYRotationMatrixAsMat4(rotValue);
         if(counter%10 == 0){
             console.log(days++  +  " " + this.globalVars.numEarthOrbits  + "            count is  - " + count);
             console.log(this.numDays);
@@ -67,7 +66,7 @@ var temp = 0;
         this.mesh.applyMatrix(transToOrigin);
         this.mesh.applyMatrix(this.removeAxialTiltMatrix);
         this.mesh.applyMatrix(this.rotationMatrix);
-        this.calcDays(radians(rotValue));
+        this.calcDays(deg2rad(rotValue));
         this.mesh.applyMatrix(this.axialTiltMatrix);
 
 
@@ -117,39 +116,6 @@ var temp = 0;
         return this.getMesh().position.z;
     };
 
-    var getYRot = function (radians){
-        var mat4 = new THREE.Matrix4();
-        var s = Math.sin(radians);
-        var c = Math.cos(radians);
-        mat4.set(
-            c, 0, s, 0,
-            0, 1, 0, 0,
-            -s, 0, c, 0,
-            0, 0, 0, 1
-        );
-        return mat4;
-    };
 
 
-    var getRotZ = function (radians) {
-        var mat4 = new THREE.Matrix4();
-        var s = Math.sin(radians);
-        var c = Math.cos(radians);
-        mat4.set(
-            c, -s, 0, 0,
-            s, c, 0, 0,
-            0, 0, 1, 0,
-            0, 0, 0, 1
-        );
-
-        return mat4;
-    };
-
-    var radianStep = function (degrees) {
-        return (2 * Math.PI) / degrees;
-    };
-
-    var radians = function (degrees) {
-        return degrees * (Math.PI / 180);
-    };
 };
