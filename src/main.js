@@ -16,7 +16,7 @@ var Main = function(){
         sceneAxes : false,
         earthAxes : false,
         moonAxes : false,
-        simSpeed : 1
+        simSpeed : 2
     };
 
     this.initSim = function(){
@@ -78,19 +78,21 @@ var Main = function(){
     };
 
     this.initEntities = function(){
+        var pointList = orbitUtils.generateElliptical(0.12,globalVars.earthYear,80,0);
+        globalVars.numIterationsInYear = pointList.length;
         sun = new Sun();
-        sun.init();
+        sun.init(globalVars);
         addToScene(sun.getMesh());
         earth = new Earth();
+        earth.orbitPoints = pointList;
         earth.init(globalVars,guiVars);
         earthAxis = geometryTools.makeLines(15, false, 0x00AFFA, 0xFA00AF, 0xAFFA00);
-        earth.orbitPoints = orbitUtils.generateElliptical(0.12,3650,80,0);
         earth.orbitPlot = orbitUtils.plotOrbit(earth.orbitPoints,0xffd3ff);
         addToScene(earth.getMesh());
         moon = new Moon();
         moon.init();
         moonAxes = geometryTools.makeLines(10,false,0x59242A, 0xF2B96E, 0x647D50);
-        moon.orbitPoints = orbitUtils.generateElliptical(0.3, 280, 10, -5.145);
+        moon.orbitPoints = orbitUtils.generateElliptical(0.3, 273.2, 10, -5.145);
         moon.orbitPlot = orbitUtils.plotOrbit(moon.orbitPoints,0xb2b2b2);
         addToScene(moon.getMesh());
         camera.lookAt(earth.getMesh().position);
@@ -128,8 +130,9 @@ var Main = function(){
     var UpdateGUIVars = function(){
         ambientIntensityInitial = guiVars.ambientLightIntensity;
         if(globalVars.simSpeed != guiVars.simSpeed) {
-            if(guiVars.simSpeed < 0){
-                globalVars.simSpeed = 0.01;
+            if(guiVars.simSpeed < 1){
+                globalVars.simSpeed = 1;
+                guiVars.simSpeed = 1;
             }else {
                 globalVars.simSpeed = guiVars.simSpeed;
             }

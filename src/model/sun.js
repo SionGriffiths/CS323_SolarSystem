@@ -3,28 +3,38 @@ var Sun = function(){
     this.geometry = null;
     this.material = null;
     this.mesh = null;
+    this.rotMatrix = null;
+    this.globalVars = null;
 
-    this.init = function(){
+    this.init = function(globalVars){
         this.geometry = new THREE.SphereGeometry(14, 32, 32);
         this.material = new THREE.MeshBasicMaterial();
         this.material.map = THREE.ImageUtils.loadTexture('assets/images/sunmap.jpg');
         this.mesh = new THREE.Mesh(this.geometry, this.material);
+        this.globalVars = globalVars;
     };
 
     this.getMesh = function(){
         return this.mesh;
     };
 
-    this.update = function(globalVars,guiVars) {
-        var speed = globalVars.simSpeed;
-        //this.getMesh().applyMatrix(getYRot(radianStep(27*globalVars.earthDay*speed)));
+    this.update = function(guiVars) {
+
+        this.getMesh().applyMatrix(computeRotationMatrix(this.globalVars));
         if (guiVars.removeSun) {
-            globalVars.scene.remove(this.getMesh());
+            this.globalVars.scene.remove(this.getMesh());
         } else {
-            globalVars.scene.add(this.getMesh());
+            this.globalVars.scene.add(this.getMesh());
         }
     };
 
+
+    var computeRotationMatrix = function(globalVars){
+    //13.52
+        var annualRotations = (globalVars.numIterationsInYear/13.52);
+        var rotValue = 360/annualRotations*globalVars.simSpeed;
+        return getYRot(radians(rotValue));
+    };
 
 
     var getYRot = function (radians){
@@ -40,7 +50,7 @@ var Sun = function(){
         );
         return mat4;
     };
-    var radianStep = function (degrees) {
-        return (2 * Math.PI) / degrees;
+    var radians = function (degrees) {
+        return degrees * (Math.PI / 180);
     };
 };

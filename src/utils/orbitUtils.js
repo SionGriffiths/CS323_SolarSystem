@@ -27,9 +27,6 @@ var OrbitUtils = function(matUtils){
         }
     };
 
-    this.radianOrbitalStep = function (degrees) {
-        return (2 * Math.PI) / degrees;
-    };
     //((2/N)( 1+ e cos ? )^2)/(1-e^2)^(3/2)
     var computeTheta = function(e,theta,periodSlices){
         return ((2/periodSlices)* Math.pow((1+ (e*Math.cos(theta))),2))  / Math.pow( (1-Math.pow(e,2)) ,(3/2));

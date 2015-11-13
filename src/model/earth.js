@@ -11,6 +11,10 @@ var Earth = function(){
     this.rotationMatrix = null;
     this.axialTiltMatrix = null;
     this.removeAxialTiltMatrix = null;
+    this.numDays = 0;
+    this.pointsInDay = 0;
+    var rotValue = 0;
+var temp = 0;
 
     this.init = function(globalVars,guiVars){
         this.geometry = new THREE.SphereGeometry(4, 128, 128);
@@ -19,11 +23,15 @@ var Earth = function(){
         this.mesh = new THREE.Mesh(this.geometry, this.material);
         this.mesh.castShadow = true;
         this.mesh.receiveShadow = true;
-        this.mesh.matrix = new THREE.Matrix4();
         this.globalVars = globalVars;
         this.guiVars = guiVars;
-        //this.matrixAutoUpdate = false;
-        this.rotationMatrix = getYRot(radians(((this.globalVars.earthYear/365)/360)*(this.globalVars.simSpeed/10)));
+        this.matrixAutoUpdate = false;
+        console.log((this.orbitPoints.length/365.26));
+        this.pointsInDay = (this.orbitPoints.length/365.26);
+        console.log(this.pointsInDay);
+        rotValue = 360/this.pointsInDay*globalVars.simSpeed;
+        this.rotationMatrix = getYRot(radians(rotValue));
+        temp = radians(rotValue);
         this.axialTiltMatrix = getRotZ(radians(23.4));
         this.removeAxialTiltMatrix = getRotZ(radians(-23.4));
         this.mesh.applyMatrix(this.axialTiltMatrix);
@@ -32,14 +40,34 @@ var Earth = function(){
     this.getMesh = function(){
         return this.mesh;
     };
+    var counter = 0;
+    var days = 0;
+    var years = 0;
+    var currads = 0;
+
+    this.calcDays = function(radsAmount){
+        currads += radsAmount;
+        if(currads >= 2 * Math.PI){
+            var tmp = currads - 2 * Math.PI;
+            currads = 0;
+            currads += tmp;
+            this.numDays++;
+        }
+    };
 
     this.update = function(){
-
+        rotValue = 360/this.pointsInDay*this.globalVars.simSpeed;
+        this.rotationMatrix = getYRot(radians(rotValue));
+        if(counter%10 == 0){
+            console.log(days++  +  " " + this.globalVars.numEarthOrbits  + "            count is  - " + count);
+            console.log(this.numDays);
+        }
         var transToOrigin = new THREE.Matrix4().makeTranslation( -this.getX(), -this.getY(), -this.getZ());
 
         this.mesh.applyMatrix(transToOrigin);
         this.mesh.applyMatrix(this.removeAxialTiltMatrix);
         this.mesh.applyMatrix(this.rotationMatrix);
+        this.calcDays(radians(rotValue));
         this.mesh.applyMatrix(this.axialTiltMatrix);
 
 
@@ -51,9 +79,10 @@ var Earth = function(){
         //count++;
         if(count >= this.orbitPoints.length){
             count = 0;
+
             this.globalVars.numEarthOrbits++;
         }
-
+        counter++;
     };
 
     this.updateOrbitPlots = function(){
