@@ -200,10 +200,7 @@ var Main = function(){
         var geom = new THREE.SphereGeometry(500, 60, 40);
         var mat = new THREE.MeshBasicMaterial({map: new THREE.TextureLoader().load("assets/images/starmap.png")});
         mat.side = THREE.BackSide;
-        var skyBox = new THREE.Mesh(geom, mat);
-
-
-        return skyBox
+        return new THREE.Mesh(geom, mat);
     }
 
 };
