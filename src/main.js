@@ -47,6 +47,7 @@ var Main = function(){
                 window.requestAnimationFrame(drawFrame);
                 return;
             }
+
             update();
             render();
             //stats.end();
@@ -105,6 +106,7 @@ var Main = function(){
 
     var update = function(){
         earth.update(globalVars);
+        //sun.getMesh().applyMatrix(matrixUtils.getYRotationMatrix(orbitUtils.radianOrbitalStep(27*30)));
         sun.update(globalVars,guiVars);
         moon.update(globalVars,earth);
         pausedEnabledUpdates();
@@ -127,7 +129,7 @@ var Main = function(){
         ambientIntensityInitial = guiVars.ambientLightIntensity;
         if(globalVars.simSpeed != guiVars.simSpeed) {
             if(guiVars.simSpeed < 0){
-                globalVars.simSpeed = 0.1;
+                globalVars.simSpeed = 0.01;
             }else {
                 globalVars.simSpeed = guiVars.simSpeed;
             }

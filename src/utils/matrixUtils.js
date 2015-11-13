@@ -1,5 +1,9 @@
 var MatrixUtils = function(){
 
+    var deg2rad = function(angle){
+        return angle * (Math.PI / 180);
+    };
+
    this.getXRotationMatrix = function (angle){
         var radians = angle * (Math.PI / 180);
         return [

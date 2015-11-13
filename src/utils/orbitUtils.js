@@ -13,9 +13,11 @@ var OrbitUtils = function(matUtils){
             r =  computeR(e,theta,semiMajorAxis);
             var x = polarXtoCart(r,theta);
             var z = polarZtoCart(r,theta);
-            orbitVerts[0].push(x);
+
+            //z first so direction of orbit is anti-clockwise if viewed from above.
+            orbitVerts[0].push(z);
             orbitVerts[1].push(0);
-            orbitVerts[2].push(z);
+            orbitVerts[2].push(x);
         }
 
         if(tiltValue != 0) {
@@ -25,7 +27,9 @@ var OrbitUtils = function(matUtils){
         }
     };
 
-
+    this.radianOrbitalStep = function (degrees) {
+        return (2 * Math.PI) / degrees;
+    };
     //((2/N)( 1+ e cos ? )^2)/(1-e^2)^(3/2)
     var computeTheta = function(e,theta,periodSlices){
         return ((2/periodSlices)* Math.pow((1+ (e*Math.cos(theta))),2))  / Math.pow( (1-Math.pow(e,2)) ,(3/2));
@@ -61,5 +65,7 @@ var OrbitUtils = function(matUtils){
         }
         return new THREE.Line(geometry, material);
     };
+
+
 
 };
