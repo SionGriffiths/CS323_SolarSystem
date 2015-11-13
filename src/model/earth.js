@@ -26,10 +26,7 @@ var Earth = function(){
         this.globalVars = globalVars;
         this.guiVars = guiVars;
         this.matrixAutoUpdate = false;
-        console.log((this.orbitPoints.length/365.26));
         this.pointsInDay = (this.orbitPoints.length/365.26);
-        console.log(this.pointsInDay);
-
         rotValue = 360/this.pointsInDay*Math.floor(globalVars.simSpeed);
         this.rotationMatrix = getYRotationMatrixAsMat4(rotValue);
         this.axialTiltMatrix = getZRotationMatrixAsMat4(23.4);

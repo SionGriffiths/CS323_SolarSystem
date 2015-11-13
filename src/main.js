@@ -88,6 +88,7 @@ var Main = function(){
         moon.orbitPoints = orbitUtils.generateElliptical(0.3, 273.2, 10, -5.145);
         moon.orbitPlot = orbitUtils.plotOrbit(moon.orbitPoints,0xb2b2b2);
         addToScene(moon.getMesh());
+        addToScene(initSkyBox());
     };
 
     var render = function(){
@@ -160,7 +161,7 @@ var Main = function(){
     };
     var initCamera = function(){
         camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
-        updateCameraPosition(125,0,125);
+        updateCameraPosition(200,200,200);
     };
 
     var initShadowCam = function(){
@@ -195,5 +196,14 @@ var Main = function(){
         render();
     };
 
+    var initSkyBox = function(){
+        var geom = new THREE.SphereGeometry(500, 60, 40);
+        var mat = new THREE.MeshBasicMaterial({map: new THREE.TextureLoader().load("assets/images/starmap.png")});
+        mat.side = THREE.BackSide;
+        var skyBox = new THREE.Mesh(geom, mat);
+
+
+        return skyBox
+    }
 
 };

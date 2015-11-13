@@ -9,8 +9,10 @@ var Sun = function(){
 
     this.init = function(globalVars){
         this.geometry = new THREE.SphereGeometry(14, 32, 32);
-        this.material = new THREE.MeshBasicMaterial();
-        this.material.map = THREE.ImageUtils.loadTexture('assets/images/sunmap.jpg');
+        this.material =  new THREE.MeshPhongMaterial({
+            emissive: 0xF2E9A6,
+            emissiveMap: new THREE.TextureLoader().load("assets/images/sunmap.jpg")
+        });
         this.mesh = new THREE.Mesh(this.geometry, this.material);
         this.globalVars = globalVars;
     };
