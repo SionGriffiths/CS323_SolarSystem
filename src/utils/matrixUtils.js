@@ -5,7 +5,7 @@ var MatrixUtils = function(){
     };
 
    this.getXRotationMatrix = function (angle){
-        var radians = angle * (Math.PI / 180);
+        var radians = deg2rad(angle);
         return [
             [1, 0, 0, 0],
             [0, Math.cos(radians), -Math.sin(radians), 0],
@@ -15,7 +15,7 @@ var MatrixUtils = function(){
     };
 
    this.getZRotationMatrix = function (angle){
-        var radians = angle * (Math.PI / 180);
+       var radians = deg2rad(angle);
         return [
             [Math.cos(radians), -Math.sin(radians), 0, 0],
             [Math.sin(radians), Math.cos(radians), 0, 0],
@@ -25,7 +25,7 @@ var MatrixUtils = function(){
     };
 
     this.getYRotationMatrix = function (angle){
-        var radians = angle * (Math.PI / 180);
+        var radians = deg2rad(angle);
         return [
             [Math.cos(radians), 0, Math.sin(radians), 0],
             [0, 1, 0, 0],
