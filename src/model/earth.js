@@ -29,7 +29,8 @@ var Earth = function(){
         console.log((this.orbitPoints.length/365.26));
         this.pointsInDay = (this.orbitPoints.length/365.26);
         console.log(this.pointsInDay);
-        rotValue = 360/this.pointsInDay*globalVars.simSpeed;
+
+        rotValue = 360/this.pointsInDay*Math.floor(globalVars.simSpeed);
         this.rotationMatrix = getYRotationMatrixAsMat4(rotValue);
         this.axialTiltMatrix = getZRotationMatrixAsMat4(23.4);
         this.removeAxialTiltMatrix = getZRotationMatrixAsMat4(-23.4);
@@ -55,7 +56,7 @@ var Earth = function(){
     };
 
     this.update = function(){
-        rotValue = 360/this.pointsInDay*this.globalVars.simSpeed;
+        rotValue = 360/this.pointsInDay*Math.floor(this.globalVars.simSpeed);
         this.rotationMatrix = getYRotationMatrixAsMat4(rotValue);
         var transToOrigin = new THREE.Matrix4().makeTranslation( -this.getX(), -this.getY(), -this.getZ());
 
@@ -71,7 +72,7 @@ var Earth = function(){
         this.mesh.position.z = this.orbitPoints[count].z;
         this.mesh.position.x = this.orbitPoints[count].x;
 
-        count +=Math.floor(1 * this.globalVars.simSpeed) ;
+        count +=Math.floor(this.globalVars.simSpeed) ;
         //count++;
         if(count >= this.orbitPoints.length){
             count = 0;

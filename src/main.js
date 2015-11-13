@@ -27,7 +27,7 @@ var Main = function(){
         addToScene(ambientLight);
         initRenderer();
         initControls();
-        this.initEntities();
+        initEntities();
         shadowLight = new THREE.SpotLight(0xffffff, 1);
         initShadowCam();
         addToScene(shadowLight);
@@ -36,7 +36,6 @@ var Main = function(){
 
     this.startSim = function(){
         (function drawFrame(){
-            //stats.begin();
             if(guiVars.paused) {
                 render();
                 pausedEnabledUpdates();
@@ -45,7 +44,6 @@ var Main = function(){
             }
             update();
             render();
-            //stats.end();
             window.requestAnimationFrame(drawFrame);
         }());
     };
@@ -72,7 +70,7 @@ var Main = function(){
         globalVars.scene.remove(entity)
     };
 
-    this.initEntities = function(){
+    var initEntities = function(){
         var pointList = orbitUtils.generateElliptical(0.12,globalVars.earthYear,80,0);
         globalVars.numIterationsInYear = pointList.length;
         sun = new Sun();
@@ -90,7 +88,6 @@ var Main = function(){
         moon.orbitPoints = orbitUtils.generateElliptical(0.3, 273.2, 10, -5.145);
         moon.orbitPlot = orbitUtils.plotOrbit(moon.orbitPoints,0xb2b2b2);
         addToScene(moon.getMesh());
-        camera.lookAt(earth.getMesh().position);
     };
 
     var render = function(){
@@ -141,7 +138,7 @@ var Main = function(){
             });
         }else{
             $.each( sceneAxes, function( key, line ) {
-               removeFromScene(line);
+                removeFromScene(line);
             });
         }
         if(guiVars.earthAxes){
@@ -165,9 +162,10 @@ var Main = function(){
         camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
         updateCameraPosition(125,0,125);
     };
+
     var initShadowCam = function(){
         shadowLight.castShadow = true;
-        shadowLight.shadowDarkness = 0.7;
+        shadowLight.shadowDarkness = 0.5;
         shadowLight.shadowCameraVisible = false;
         shadowLight.shadowCameraLeft = -0.5;
         shadowLight.shadowCameraRight = 0.5;
@@ -190,7 +188,7 @@ var Main = function(){
         return gui;
     };
 
-   var onWindowResize = function(){
+    var onWindowResize = function(){
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);

@@ -23,10 +23,8 @@ var Sun = function(){
 
         if (guiVars.removeSun) {
             this.globalVars.scene.remove(this.getMesh());
-            console.log('remove');
         } else {
             this.globalVars.scene.add(this.getMesh());
-            console.log('add');
         }
 
         this.getMesh().applyMatrix(this.computeRotationMatrix(this.globalVars));
@@ -50,7 +48,8 @@ var Sun = function(){
     this.computeRotationMatrix = function(globalVars){
     //13.52
         var annualRotations = (globalVars.numIterationsInYear/13.52);
-        var rotValue = 360/annualRotations*globalVars.simSpeed;
+        var speed = Math.floor(globalVars.simSpeed);
+        var rotValue = 360/annualRotations*speed;
         this.calcDays(deg2rad(rotValue));
         return getYRotationMatrixAsMat4(rotValue);
     };
