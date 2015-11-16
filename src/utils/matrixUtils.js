@@ -67,9 +67,7 @@ function physicalToHomoCoords(vertPoints){
 }
 
 function multiplyMatrices(matA, matB){
-
     var result = initMatrix(matA,matB);
-
     for(var row=0; row < matB.length; row++){
         for(var col=0; col < matB[0].length; col++){
             for(var i=0; i < matA[0].length; i++){
@@ -77,9 +75,7 @@ function multiplyMatrices(matA, matB){
             }
         }
     }
-
     return result;
-
 }
 
 function initMatrix(matA,matB){
