@@ -71,14 +71,27 @@ This report will detail the steps undertaken in constructing a visualisation of 
 
 To access the visualisation use the following link -  \url{http://users.aber.ac.uk/sig2/cs323/CS323\_SolarSystem/}
 
+
+\begin{figure}[h!]
+                \centering
+                \includegraphics[width=0.8\columnwidth]{media/overview1}
+                \caption{A screen capture showing an overview of the developed system}
+                \label{fig:basic_model}
+            \end{figure}
+
+
 \section{Structure \& Implementation}
-The code that's been developed for this project can be divided into three sections; main, entities and utilities.
+The code developed for this assignment can be split into 2 distinct packages, Model and Utils. The javascript files contained within the model package are essentially the descriptions of the entities within the system, the Earth, Sun and Moon. These files contain data regarding the state of the entities (geometry etc) along with functions which control their behaviour, for example the 'update' functions which control the changes to the entities(position etc) each iteration of the main logic loop.
 
-Main contains only one file, main.js. This file is boss.
 
-Entities are essentially the model classes for the visualisation, with separate files for Earth, Moon and the Sun.
+The utils package contains utility code, split across various files depending on the nature of the code. The package contains files with utility code for the following: matrix functions, simple geometry functions and functions relating to the computation of orbits.
 
-The utilities section comprises various files for dealing with geometry, matrix manipulations, global variables and some orbital mechanics 
+
+Separate from these two packages is the main.js file. This file serves as the entry point and initialisation of the system along with controlling the updating of the various parts of the system, entities, camera, gui variables etc. 
+
+
+The approach taken was an iterative one, starting with implementing the basic requirements using the native Three.js functionality, this allowed a basic understanding of the task at hand and provided a means to further familiarise myself with the Three.js framework.
+
 
 \section{Basic Tasks}
 \subsection{The earth orbits the centre of the sun}

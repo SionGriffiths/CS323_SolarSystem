@@ -3,7 +3,6 @@ var Sun = function(){
     this.geometry = null;
     this.material = null;
     this.mesh = null;
-    this.rotMatrix = null;
     this.globalVars = null;
     this.numRots = 0;
 
