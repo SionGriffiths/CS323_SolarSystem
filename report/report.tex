@@ -115,7 +115,7 @@ The approach taken was an iterative one, starting with implementing the basic re
 \subsubsection{Circular orbits}
 During the initial prototyping stage of development, the orbits of the Earth and Moon were implemented as simple circles. This was achieved using simple trigonometry to update the relative positions on the x and z axes. The function to achieve this is shown in the code snippet below,:
 
-\begin{lstlisting}
+\begin{lstlisting}[caption=Simple orbit calculation]
 var earthDistanceFromSun = 24;
 var earthRotationSpeed = 0.2;
 
@@ -138,8 +138,56 @@ Using the technique described above, it's clear to see that this can be applied 
  
 
 \subsection{Extended}
-\subsubsection{Elliptical orbits \& Non-uniform orbital velocities }
+\subsubsection{Elliptical orbits \& Non-uniform orbital velocities}
+Using the information given within the assignment brief, elliptical orbits and non-uniform orbital velocity functionality was implemented within the system. The provided equations, once translated into code, allowed an elliptical orbit to be pre-computed as a list of vectors that would then be traversed and applied as position for the centre of an orbiting mesh to provide an animated orbit.
+
+
+\begin{figure}[h!]
+                \centering
+                \includegraphics[width=0.8\columnwidth]{media/ellipboth}
+                \caption{Screen captures displaying the orbit of the Moon calculated with different eccentricity values. 0.5 on the left, 0.3 (system default) on the right. In order to change this value the code needs to be changed in main.js, line 88. The first parameter for the function generateElliptical()}
+                \label{fig:basic_model}
+            \end{figure}
+\FloatBarrier
+The distance between the list of vectors generated for the orbit is not constant, the effect of this is a non-uniform orbital velocity as the points are traversed in the animation, giving an approximation of planetary motion.
+
+The code for generating the elliptical is shown below:
+
+\begin{lstlisting}[caption=Above code can be found in OrbitUtils.js]
+this.generateElliptical = function(eccentricity, periodSlices, semiMajorAxis, tiltValue){
+
+    var orbitVerts = [];
+    var theta = 0;
+    var r = 0;
+
+    while(theta <= 2*Math.PI) {
+        theta += computeTheta(eccentricity,theta,periodSlices);
+        r =  computeR(eccentricity,theta,semiMajorAxis);
+
+        //negate the result for X to achieve anti clockwise orbital rotations
+        var x = -polarXtoCart(r,theta);
+        var z = polarZtoCart(r,theta);
+        orbitVerts.push(vec3(x,0,z));
+    }
+    return orbitVerts;
+};
+
+//((2/N)( 1+ e cos ? )^2)/(1-e^2)^(3/2)
+var computeTheta = function(e,theta,periodSlices){
+    return ((2/periodSlices)* Math.pow((1+ (e*Math.cos(theta))),2))  / Math.pow( (1-Math.pow(e,2)) ,(3/2));
+};
+
+//r = a(1-e^2)/(1+ e cos ? )
+var computeR = function(e, theta, a){
+    return (a*(1-Math.pow(e,2)))/(1+e*Math.cos(theta));
+};
+
+\end{lstlisting}
+
+
+
 \subsubsection{Constant tilt of the Moon’s orbit}
+
 
 \section{Textures and lighting}
 

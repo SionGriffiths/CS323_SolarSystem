@@ -1,6 +1,11 @@
+/*
+* This file contains functionality related to computation of elliptical orbits as specified in the Assignment brief.
+* The file also contains utility methods to create an orbital plot or apply a tilt to a pre-generated orbit.
+* */
+
 var OrbitUtils = function(){
 
-    this.generateElliptical = function(eccentricity, periodSlices, semiMajorAxis, tiltValue){
+    this.generateElliptical = function(eccentricity, periodSlices, semiMajorAxis){
 
         var orbitVerts = [];
         var theta = 0;
@@ -15,12 +20,7 @@ var OrbitUtils = function(){
             var z = polarZtoCart(r,theta);
             orbitVerts.push(vec3(x,0,z));
         }
-
-        if(tiltValue != 0) {
-            return applyTiltToOrbit(tiltValue,orbitVerts);
-        }else {
-            return orbitVerts;
-        }
+        return orbitVerts;
     };
 
     //((2/N)( 1+ e cos ? )^2)/(1-e^2)^(3/2)
@@ -41,7 +41,7 @@ var OrbitUtils = function(){
         return r * Math.sin(theta);
     };
 
-    var applyTiltToOrbit = function(angle, points){
+    this.applyTiltToOrbit = function(angle, points){
         var tiltRotation =  getZRotationMatrixAsMat4(angle);
         for(var i = 0; i < points.length; i++){
             points[i] = applyMat4toVec3(tiltRotation,points[i]);
@@ -57,7 +57,4 @@ var OrbitUtils = function(){
         geometry.vertices = orbitPoints;
         return new THREE.Line(geometry, material);
     };
-
-
-
 };

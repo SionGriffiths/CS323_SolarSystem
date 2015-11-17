@@ -151,15 +151,7 @@ function applyMat4toVec3(mat4, vect3){
         (e[2] * vect3.x) + (e[6] * vect3.y) + (e[10] * vect3.z) + (e[14]),
         (e[3] * vect3.x) + (e[7] * vect3.y) + (e[11] * vect3.z) + (e[15])
     );
-
     return vect3;
-
-}
-
-function translateToCoords(matrix,x,y,z){
-
-    var elements
-
 }
 
 

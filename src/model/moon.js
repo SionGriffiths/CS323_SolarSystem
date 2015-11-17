@@ -23,8 +23,11 @@ var Moon = function(){
     
     this.update  = function(globalVars,earth){
         this.getMesh().lookAt(earth.getMesh().position);
+
         this.getMesh().position.x = earth.getX() + this.orbitPoints[count].x;
+        this.getMesh().position.y = earth.getY() + this.orbitPoints[count].y;
         this.getMesh().position.z = earth.getZ() + this.orbitPoints[count].z;
+
         count += Math.floor(1 * globalVars.simSpeed);
         if(count >= this.orbitPoints.length) {
             count = 0; globalVars.numMoonOrbits++;

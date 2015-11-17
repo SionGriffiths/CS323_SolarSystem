@@ -44,7 +44,7 @@ var Sun = function(){
             $("#sunRotations").text("Sun Rotations : " + this.numRots);
         }
     };
-    
+
     this.computeRotationMatrix = function(globalVars){
     //13.52
         var annualRotations = (globalVars.numIterationsInYear/13.52);
