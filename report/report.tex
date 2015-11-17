@@ -103,7 +103,7 @@ The code developed for this assignment can be split into 2 distinct packages, Mo
 The utils package contains utility code, split across various files depending on the nature of the code. The package contains files with utility code for the following: matrix functions, simple geometry functions and functions relating to the computation of orbits.
 
 
-Separate from these two packages is the main.js file. This file serves as the entry point and initialisation of the system along with controlling the updating of the various parts of the system, entities, camera, gui variables etc. 
+Separate from these two packages is the main.js file. This file serves as the entry point and initialisation of the system along with controlling the updating of the various parts of the system, entities, camera, GUI variables etc. 
 
 
 The approach taken was an iterative one, starting with implementing the basic requirements using the native Three.js functionality, this allowed a basic understanding of the task at hand and provided a means to further familiarise myself with the Three.js framework. Once basic functionalities were implemented, prototyping of the extended requirements could begin, again in an iterative manner, since not everything worked as expected with Three.js to begin with.
@@ -112,8 +112,34 @@ The approach taken was an iterative one, starting with implementing the basic re
 \section{Orbits}
 
 \subsection{Basics}
+\subsubsection{Circular orbits}
+During the initial prototyping stage of development, the orbits of the Earth and Moon were implemented as simple circles. This was achieved using simple trigonometry to update the relative positions on the x and z axes. The function to achieve this is shown in the code snippet below,:
+
+\begin{lstlisting}
+var earthDistanceFromSun = 24;
+var earthRotationSpeed = 0.2;
+
+var eathRot = function(earthMesh, sunMesh){
+    
+    var x = earthDistanceFromSun * -Math.cos(earthRotationAngle * (Math.PI / 180));
+    var z = earthDistanceFromSun * -Math.sin(earthRotationAngle * (Math.PI / 180));
+    earthRotationAngle-= earthOrbitRotationSpeed;
+    
+    earthMesh.position.x = sunMesh.position.x + x;
+    earthMesh.position.z = sunMesh.position.z + z;
+}
+
+\end{lstlisting}
+
+As the value for \texttt{earthRotationAngle} decreases with each iteration of the function, the positions calculated will 'swing' around an origin point. The calculated positions are added onto the sun's central position and applied to the Earth's position, such that the Earth will appear to circle around the sun.
+
+\subsubsection{The earth orbits the centre of the sun \& The moon orbits the centre of the earth}
+Using the technique described above, it's clear to see that this can be applied to any mesh to ensure that it's rotation is around the centre of another. Even if the other mesh has a dynamic position (as, in the case of the Moon orbiting the Earth as the Earth is moving around the Sun.), as the positions applied are relative as opposed to being absolute. The relative positions can be added to any other position to create the desired circular orbit.
+ 
 
 \subsection{Extended}
+\subsubsection{Elliptical orbits \& Non-uniform orbital velocities }
+\subsubsection{Constant tilt of the Moon’s orbit}
 
 \section{Textures and lighting}
 
@@ -138,7 +164,7 @@ this.material.map = THREE.ImageUtils.loadTexture('assets/images/earthmap1k.jpg')
 
 
 \subsubsection{The sun shown as a self-illuminated sphere}
-In order for the Sun to appear as self illuminated, the material for its mesh has been defined as emissive. The sun texture itself is used as an emission map and a colour parameter is given  
+In order for the Sun to appear as self illuminated, the material for its mesh has been defined as emissive. The sun texture image itself is used as an emission map and a colour parameter is given. 
 \begin{lstlisting}
 this.material =  new THREE.MeshPhongMaterial({
     emissive: 0xF2E9A6, //emission colour
@@ -151,18 +177,23 @@ this.material =  new THREE.MeshPhongMaterial({
                 \caption{Emissive texture with different colours}
                 \label{fig:basic_model}
 \end{figure}
+
+\subsubsection{Earth and moon lit by a single point light source located at the centre of the Sun}
+This is the only requirement which could be considered unfulfilled. Indeed there is no point light in the centre of the sun. However, the Earth and Moon are lit from a light source at the centre of the Sun, in order for shadows to be implemented it was necessary to use a source other than point light since it does not support such functionality. This is a limitation imposed by Three.js for efficiency sake. Please see section below for details of the shadows.
 \subsection{Extended}
+\subsubsection{Lighting of the earth and moon in Phong shading}
+\subsubsection{Non-illuminated parts of the earth and moon to be shown in shadow}
 \medskip
 
 \section{Axes and tilts}
 
 \subsection{Basics}
-
+\subsubsection{The sun, earth and moon each spinning on their own axes}
 \subsection{Extended}
-
+\subsubsection{Constant tilt of the earth’s axis}
 
 \section{User Interface}
-
+\subsection{Suitable user control interface for viewing, scaling, timing}
 \section{Self Assessment}
 
  \begin{tabularx}{0.8\columnwidth}{| X | X | X |}

@@ -9,7 +9,7 @@ var Sun = function(){
     this.init = function(globalVars){
         this.geometry = new THREE.SphereGeometry(14, 64, 64);
         this.material =  new THREE.MeshPhongMaterial({
-            emissive: 0xF2E9A6, //Emission colour
+            emissive: 0xF2E9A6, //emission colour
             emissiveMap: new THREE.TextureLoader().load("assets/images/sunmap.jpg")
         });
         this.mesh = new THREE.Mesh(this.geometry, this.material);
@@ -34,7 +34,6 @@ var Sun = function(){
 
 
     var currads = 0;
-
     this.calcDays = function(radsAmount){
         currads += radsAmount;
         if(currads >= 2 * Math.PI){
@@ -45,7 +44,7 @@ var Sun = function(){
             $("#sunRotations").text("Sun Rotations : " + this.numRots);
         }
     };
-
+    
     this.computeRotationMatrix = function(globalVars){
     //13.52
         var annualRotations = (globalVars.numIterationsInYear/13.52);

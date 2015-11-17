@@ -13,6 +13,7 @@ var Main = function(){
         sceneAxes : false,
         earthAxes : false,
         moonAxes : false,
+        shadowCam : false,
         simSpeed : 1
     };
 
@@ -119,14 +120,15 @@ var Main = function(){
     };
 
     var UpdateGUIVars = function(){
+        console.log(guiVars.shadowCam);
         ambientIntensityInitial = guiVars.ambientLightIntensity;
         if(globalVars.simSpeed != guiVars.simSpeed) {
-            if(guiVars.simSpeed < 1){
-                globalVars.simSpeed = 1;
-                guiVars.simSpeed = 1;
-            }else {
-                globalVars.simSpeed = guiVars.simSpeed;
-            }
+            globalVars.simSpeed = guiVars.simSpeed;
+        }
+        if(guiVars.shadowCam){
+            addToScene(shadowLight.helper);
+        }else{
+            removeFromScene(shadowLight.helper);
         }
     };
 
@@ -165,7 +167,7 @@ var Main = function(){
     var initShadowCam = function(){
         shadowLight.castShadow = true;
         shadowLight.shadowDarkness = 0.5;
-        shadowLight.shadowCameraVisible = false;
+        shadowLight.helper = new THREE.CameraHelper( shadowLight.shadow.camera );
         shadowLight.shadowCameraLeft = -0.5;
         shadowLight.shadowCameraRight = 0.5;
         shadowLight.shadowCameraTop = 0.5;
@@ -184,6 +186,7 @@ var Main = function(){
         gui.add(guiVars, 'sceneAxes').name('Toggle Scene Axes');
         gui.add(guiVars, 'earthAxes').name('Toggle Earth Axes');
         gui.add(guiVars, 'moonAxes').name('Toggle Moon Axes');
+        gui.add(guiVars, 'shadowCam').name('Toggle Shadow Cam');
         return gui;
     };
 
@@ -202,3 +205,4 @@ var Main = function(){
     }
 
 };
+
