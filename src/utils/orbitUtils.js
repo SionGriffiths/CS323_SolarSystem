@@ -1,26 +1,23 @@
 var OrbitUtils = function(){
 
-    this.generateElliptical = function(e, periodSlices, semiMajorAxis, tiltValue){
+    this.generateElliptical = function(eccentricity, periodSlices, semiMajorAxis, tiltValue){
 
-        var orbitVerts = [[],[],[]];
+        var orbitVerts = [];
         var theta = 0;
         var r = 0;
 
         while(theta <= 2*Math.PI) {
-            theta += computeTheta(e,theta,periodSlices);
-            r =  computeR(e,theta,semiMajorAxis);
+            theta += computeTheta(eccentricity,theta,periodSlices);
+            r =  computeR(eccentricity,theta,semiMajorAxis);
             var x = polarXtoCart(r,theta);
             var z = polarZtoCart(r,theta);
-
-            orbitVerts[0].push(z);
-            orbitVerts[1].push(0);
-            orbitVerts[2].push(x);
+            orbitVerts.push(vec3(z,0,x));
         }
 
         if(tiltValue != 0) {
-            return applyTiltToOrbit(tiltValue, orbitVerts);
+            return applyTiltToOrbit(tiltValue,orbitVerts);
         }else {
-            return getVertDataFromMatrix(orbitVerts);
+            return orbitVerts;
         }
     };
 
@@ -43,10 +40,11 @@ var OrbitUtils = function(){
     };
 
     var applyTiltToOrbit = function(angle, points){
-        var tiltRotation =  getXRotationMatrix(angle);
-        var coordinates =  physicalToHomoCoords(points);
-        var transform =  multiplyMatrices(tiltRotation, coordinates);
-        return  getVertDataFromMatrix(transform);
+        var tiltRotation =  getZRotationMatrixAsMat4(angle);
+        for(var i = 0; i < points.length; i++){
+            points[i].applyMatrix4(tiltRotation);
+        }
+        return points;
     };
 
     this.plotOrbit = function(orbitPoints,colour){
@@ -54,9 +52,7 @@ var OrbitUtils = function(){
             color: colour
         });
         var geometry = new THREE.Geometry();
-        for(var i = 0; i < orbitPoints.length; i++ ){
-            geometry.vertices.push(orbitPoints[i]);
-        }
+        geometry.vertices = orbitPoints;
         return new THREE.Line(geometry, material);
     };
 

@@ -17,24 +17,19 @@ var Moon = function(){
         this.mesh.receiveShadow = true;
     };
 
-
     this.getMesh = function(){
         return this.mesh;
     };
-
     
     this.update  = function(globalVars,earth){
         this.getMesh().lookAt(earth.getMesh().position);
         this.getMesh().position.x = earth.getX() + this.orbitPoints[count].x;
         this.getMesh().position.z = earth.getZ() + this.orbitPoints[count].z;
-        this.getMesh().position.y = earth.getY() + this.orbitPoints[count].y;
         count += Math.floor(1 * globalVars.simSpeed);
-        //count++;
         if(count >= this.orbitPoints.length) {
             count = 0; globalVars.numMoonOrbits++;
             $("#moonOrbits").text("Moon Orbits : " + globalVars.numMoonOrbits);
         }
-
     };
 
     this.updateOrbitPlots = function(guiVars,globalVars,earth){

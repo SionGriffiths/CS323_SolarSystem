@@ -14,6 +14,21 @@ function getXRotationMatrix (angle){
     ]
 }
 
+
+function getXRotationMatrixAsMat4 (angle){
+    var radians = deg2rad(angle);
+    var mat4 = new THREE.Matrix4();
+    mat4.set(
+        0, 1, 0, 0,
+        0, Math.cos(radians), -Math.sin(radians),  0,
+        0, Math.sin(radians), Math.cos(radians),  0,
+        0, 0, 0, 1
+    );
+    return mat4;
+}
+
+
+
 function getZRotationMatrix (angle){
     var radians = deg2rad(angle);
     return [
@@ -89,12 +104,5 @@ function initMatrix(matA,matB){
     return newMat;
 }
 
-function getVertDataFromMatrix(mat){
-    var vertices = [];
-    for (var i = 0; i < mat[0].length; i++){
-        vertices.push(vec3(mat[0][i], mat[1][i], mat[2][i]));
-    }
-    return vertices;
-}
 
 
