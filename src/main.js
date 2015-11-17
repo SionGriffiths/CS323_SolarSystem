@@ -2,7 +2,7 @@
 var Main = function(){
 
     var camera,renderer,earth,sun,moon,globalVars,orbitUtils,shadowLight,
-        controls,ambientLight,gui,geometryTools,sceneAxes = [],earthAxis = [],moonAxes = [],ambientIntensityInitial = 1;
+        controls,ambientLight,gui,sceneAxes = [],earthAxis = [],moonAxes = [],ambientIntensityInitial = 1;
 
     var guiVars = {
         ambientLightIntensity : 0.2,
@@ -19,7 +19,7 @@ var Main = function(){
     this.initSim = function(){
         globalVars = new GlobalVars();
         orbitUtils = new OrbitUtils();
-        geometryTools = new GeometryTools();
+
         globalVars.scene = new THREE.Scene();
         initCamera();
         initSceneAxes(100);
@@ -79,12 +79,12 @@ var Main = function(){
         earth = new Earth();
         earth.orbitPoints = pointList;
         earth.init(globalVars,guiVars);
-        earthAxis = geometryTools.makeLines(15, false, 0x00AFFA, 0xFA00AF, 0xAFFA00);
+        earthAxis = makeLines(15, false, 0x00AFFA, 0xFA00AF, 0xAFFA00);
         earth.orbitPlot = orbitUtils.plotOrbit(earth.orbitPoints,0xffd3ff);
         addToScene(earth.getMesh());
         moon = new Moon();
         moon.init();
-        moonAxes = geometryTools.makeLines(10,false,0x59242A, 0xF2B96E, 0x647D50);
+        moonAxes = makeLines(10,false,0x59242A, 0xF2B96E, 0x647D50);
         moon.orbitPoints = orbitUtils.generateElliptical(0.3, 273.2, 10, -5.145);
         moon.orbitPlot = orbitUtils.plotOrbit(moon.orbitPoints,0xb2b2b2);
         addToScene(moon.getMesh());
@@ -96,7 +96,7 @@ var Main = function(){
     };
 
     var initSceneAxes = function(axisLength){
-        sceneAxes = geometryTools.makeLines(axisLength, true, 0x5CA788, 0xD4D35D, 0xEF6A6B);
+        sceneAxes = makeLines(axisLength, true, 0x5CA788, 0xD4D35D, 0xEF6A6B);
     };
 
     var update = function(){

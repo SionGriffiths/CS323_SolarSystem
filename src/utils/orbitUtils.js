@@ -12,7 +12,6 @@ var OrbitUtils = function(){
             var x = polarXtoCart(r,theta);
             var z = polarZtoCart(r,theta);
 
-            //z first so direction of orbit is anti-clockwise if viewed from above.
             orbitVerts[0].push(z);
             orbitVerts[1].push(0);
             orbitVerts[2].push(x);

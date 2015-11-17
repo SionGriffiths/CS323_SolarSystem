@@ -92,7 +92,7 @@ function initMatrix(matA,matB){
 function getVertDataFromMatrix(mat){
     var vertices = [];
     for (var i = 0; i < mat[0].length; i++){
-        vertices.push(new THREE.Vector3(mat[0][i], mat[1][i], mat[2][i]));
+        vertices.push(vec3(mat[0][i], mat[1][i], mat[2][i]));
     }
     return vertices;
 }
