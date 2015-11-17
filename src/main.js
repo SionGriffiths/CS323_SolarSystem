@@ -177,7 +177,7 @@ var Main = function(){
 
     var initGUI = function(){
         var gui = new dat.GUI();
-        gui.add(guiVars, 'simSpeed').min(1).max(50).step(1).name('Sim Speed');;
+        gui.add(guiVars, 'simSpeed').min(1).max(50).step(1).name('Sim Speed');
         gui.add(guiVars, 'ambientLightIntensity').min(0).max(1).step(0.1).name('Ambient Light Value');
         gui.add(guiVars, 'paused').name('Pause');
         gui.add(guiVars, 'moonOrbitTrace').name('Trace Moon Orbit');
