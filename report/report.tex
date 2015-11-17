@@ -13,33 +13,49 @@
 \usepackage[section]{placeins}
 \usepackage{graphicx}
 \usepackage{hyperref}
+\usepackage{tabularx} 
 
 
 
 % --- XML Highlighting ---
 \usepackage{listings}
-
 \usepackage{color}
-\definecolor{gray}{rgb}{0.4,0.4,0.4}
-\definecolor{darkblue}{rgb}{0.0,0.0,0.6}
-\definecolor{cyan}{rgb}{0.0,0.6,0.6}
+\definecolor{lightgray}{rgb}{.9,.9,.9}
+\definecolor{darkgray}{rgb}{.4,.4,.4}
+\definecolor{purple}{rgb}{0.65, 0.12, 0.82}
+\definecolor{commentBlue}{rgb}{0.13, 0.53, 0.89}
+\definecolor{stringGreen}{rgb}{0.43, 0.72, 0.26}
+\definecolor{keywordOrange}{rgb}{0.97, 0.51, 0.15}
 
-\lstset{
-	basicstyle=\ttfamily,
-	columns=fullflexible,
-	showstringspaces=false,
-	commentstyle=\color{gray}\upshape
+\lstdefinelanguage{JavaScript}{
+  keywords={typeof, new, true, false, catch, function, return, null, catch, switch, var, if, in, while, do, else, case, break},
+  keywordstyle=\color{blue}\bfseries,
+  ndkeywords={class, export, boolean, throw, implements, import, this},
+  ndkeywordstyle=\color{keywordOrange}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=false,
+  comment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{commentBlue}\ttfamily,
+  stringstyle=\color{stringGreen}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
 }
 
-\lstdefinelanguage{XML}
-{
-	morestring=[b]",
-	morestring=[s]{>}{<},
-	morecomment=[s]{<?}{?>},
-	stringstyle=\color{black},
-	identifierstyle=\color{darkblue},
-	keywordstyle=\color{cyan},
-	morekeywords={xmlns,version,type}% list your attributes here
+\lstset{
+   language=JavaScript,
+   backgroundcolor=\color{lightgray},
+   extendedchars=true,
+   basicstyle=\footnotesize\ttfamily,
+   showstringspaces=false,
+   showspaces=false,
+   numbers=left,
+   numberstyle=\footnotesize,
+   numbersep=9pt,
+   tabsize=2,
+   breaklines=true,
+   showtabs=false,
+   captionpos=b
 }
 % --- ---- ---
 
@@ -93,13 +109,81 @@ Separate from these two packages is the main.js file. This file serves as the en
 The approach taken was an iterative one, starting with implementing the basic requirements using the native Three.js functionality, this allowed a basic understanding of the task at hand and provided a means to further familiarise myself with the Three.js framework. Once basic functionalities were implemented, prototyping of the extended requirements could begin, again in an iterative manner, since not everything worked as expected with Three.js to begin with.
 
 
-\section{Basic Tasks}
+\section{Orbits}
 
-\section{Extended Tasks}
+\subsection{Basics}
+
+\subsection{Extended}
+
+\section{Textures and lighting}
+
+\subsection{Basics}
+\subsubsection{The sun, earth and moon shown as texture mapped spheres}
+
+The spherical entities in the system (Sun, Earth and Moon) are meshes consisting of texture mapped sphere geometries. The geometries are defined as Three.js native SphereGeometry.
+
+Texture mapping of the meshes was achieved using Three.js native loadTexture functionality, an example of the Earth mesh being defined is below:
+\begin{lstlisting}
+this.geometry = new THREE.SphereGeometry(4, 32, 32);
+this.material = new THREE.MeshPhongMaterial();
+this.material.map = THREE.ImageUtils.loadTexture('assets/images/earthmap1k.jpg');
+\end{lstlisting}
+
+\begin{figure}[h!]
+                \centering
+                \includegraphics[width=0.8\columnwidth]{media/textures}
+                \caption{A screen capture showing texture detail}
+                \label{fig:basic_model}
+\end{figure}
 
 
+\subsubsection{The sun shown as a self-illuminated sphere}
+In order for the Sun to appear as self illuminated, the material for its mesh has been defined as emissive. The sun texture itself is used as an emission map and a colour parameter is given  
+\begin{lstlisting}
+this.material =  new THREE.MeshPhongMaterial({
+    emissive: 0xF2E9A6, //emission colour
+    emissiveMap: new THREE.TextureLoader().load("assets/images/sunmap.jpg")
+});
+\end{lstlisting}
+\begin{figure}[h!]
+                \centering
+                \includegraphics[width=0.8\columnwidth]{media/sunShades}
+                \caption{Emissive texture with different colours}
+                \label{fig:basic_model}
+\end{figure}
+\subsection{Extended}
+\medskip
+
+\section{Axes and tilts}
+
+\subsection{Basics}
+
+\subsection{Extended}
 
 
+\section{User Interface}
+
+\section{Self Assessment}
+
+ \begin{tabularx}{0.8\columnwidth}{| X | X | X |}
+            \hline
+            Task & Documented & Implemented \\
+            \hline
+            1 & x & ✓ \\
+            \hline
+            2 & ✓ & ✓ \\
+            \hline
+            3 & ✓ & ✓ \\
+            \hline
+            4 & ✓ & ✓ \\
+            \hline
+            5 & ✓ & ✓ \\
+            \hline
+            7 & ✓ & ✓ \\
+            \hline
+            7 & ✓ & ✓ \\
+            \hline
+        \end{tabularx} \\
 
 
 

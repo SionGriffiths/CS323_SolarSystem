@@ -7,9 +7,9 @@ var Sun = function(){
     this.numRots = 0;
 
     this.init = function(globalVars){
-        this.geometry = new THREE.SphereGeometry(14, 32, 32);
+        this.geometry = new THREE.SphereGeometry(14, 64, 64);
         this.material =  new THREE.MeshPhongMaterial({
-            emissive: 0xF2E9A6,
+            emissive: 0xF2E9A6, //Emission colour
             emissiveMap: new THREE.TextureLoader().load("assets/images/sunmap.jpg")
         });
         this.mesh = new THREE.Mesh(this.geometry, this.material);
@@ -58,3 +58,4 @@ var Sun = function(){
 
 
 };
+

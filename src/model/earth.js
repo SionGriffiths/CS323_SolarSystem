@@ -17,7 +17,7 @@ var Earth = function(){
 
 
     this.init = function(globalVars,guiVars){
-        this.geometry = new THREE.SphereGeometry(4, 128, 128);
+        this.geometry = new THREE.SphereGeometry(4, 32, 32);
         this.material = new THREE.MeshPhongMaterial();
         this.material.map = THREE.ImageUtils.loadTexture('assets/images/earthmap1k.jpg');
         this.mesh = new THREE.Mesh(this.geometry, this.material);
@@ -38,7 +38,7 @@ var Earth = function(){
         return this.mesh;
     };
 
-    var counter = 0;
+
     var currads = 0;
 
     this.calcDays = function(radsAmount){
@@ -55,13 +55,13 @@ var Earth = function(){
     this.update = function(){
         rotValue = 360/this.pointsInDay*Math.floor(this.globalVars.simSpeed);
         this.rotationMatrix = getYRotationMatrixAsMat4(rotValue);
-        var transToOrigin = new THREE.Matrix4().makeTranslation( -this.getX(), -this.getY(), -this.getZ());
+        this.calcDays(deg2rad(rotValue));
 
+        var transToOrigin = new THREE.Matrix4().makeTranslation( -this.getX(), -this.getY(), -this.getZ());
         //translate mesh to origin before applying transforms
         this.mesh.applyMatrix(transToOrigin);
         this.mesh.applyMatrix(this.removeAxialTiltMatrix);
         this.mesh.applyMatrix(this.rotationMatrix);
-        this.calcDays(deg2rad(rotValue));
         this.mesh.applyMatrix(this.axialTiltMatrix);
 
 
@@ -76,7 +76,6 @@ var Earth = function(){
             this.globalVars.numEarthOrbits++;
             $("#earthYears").text("Earth Orbits : " + this.globalVars.numEarthOrbits);
         }
-        counter++;
     };
 
     this.updateOrbitPlots = function(){

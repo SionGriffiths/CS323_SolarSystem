@@ -9,9 +9,11 @@ var OrbitUtils = function(){
         while(theta <= 2*Math.PI) {
             theta += computeTheta(eccentricity,theta,periodSlices);
             r =  computeR(eccentricity,theta,semiMajorAxis);
-            var x = polarXtoCart(r,theta);
+
+            //negate the result for X to achieve anti clockwise orbital rotations
+            var x = -polarXtoCart(r,theta);
             var z = polarZtoCart(r,theta);
-            orbitVerts.push(vec3(z,0,x));
+            orbitVerts.push(vec3(x,0,z));
         }
 
         if(tiltValue != 0) {
@@ -42,7 +44,7 @@ var OrbitUtils = function(){
     var applyTiltToOrbit = function(angle, points){
         var tiltRotation =  getZRotationMatrixAsMat4(angle);
         for(var i = 0; i < points.length; i++){
-            points[i].applyMatrix4(tiltRotation);
+            points[i] = applyMat4toVec3(tiltRotation,points[i]);
         }
         return points;
     };

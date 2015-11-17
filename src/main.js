@@ -19,7 +19,6 @@ var Main = function(){
     this.initSim = function(){
         globalVars = new GlobalVars();
         orbitUtils = new OrbitUtils();
-
         globalVars.scene = new THREE.Scene();
         initCamera();
         initSceneAxes(100);
@@ -100,7 +99,6 @@ var Main = function(){
     };
 
     var update = function(){
-
         earth.update(globalVars);
         sun.update(guiVars);
         moon.update(globalVars,earth);
@@ -177,15 +175,15 @@ var Main = function(){
 
     var initGUI = function(){
         var gui = new dat.GUI();
-        gui.add(guiVars, 'simSpeed');
-        gui.add(guiVars, 'ambientLightIntensity');
-        gui.add(guiVars, 'paused');
-        gui.add(guiVars, 'moonOrbitTrace');
-        gui.add(guiVars, 'earthOrbitTrace');
-        gui.add(guiVars, 'removeSun');
-        gui.add(guiVars, 'sceneAxes');
-        gui.add(guiVars, 'earthAxes');
-        gui.add(guiVars, 'moonAxes');
+        gui.add(guiVars, 'simSpeed').min(1).max(50).step(1).name('Sim Speed');;
+        gui.add(guiVars, 'ambientLightIntensity').min(0).max(1).step(0.1).name('Ambient Light Value');
+        gui.add(guiVars, 'paused').name('Pause');
+        gui.add(guiVars, 'moonOrbitTrace').name('Trace Moon Orbit');
+        gui.add(guiVars, 'earthOrbitTrace').name('Trace Earth Orbit');
+        gui.add(guiVars, 'removeSun').name('Toggle Sun');
+        gui.add(guiVars, 'sceneAxes').name('Toggle Scene Axes');
+        gui.add(guiVars, 'earthAxes').name('Toggle Earth Axes');
+        gui.add(guiVars, 'moonAxes').name('Toggle Moon Axes');
         return gui;
     };
 
