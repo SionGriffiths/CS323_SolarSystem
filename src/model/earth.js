@@ -16,6 +16,7 @@ var Earth = function(){
     var rotValue = 0;
 
 
+
     this.init = function(globalVars,guiVars){
         this.geometry = new THREE.SphereGeometry(4, 32, 32);
         this.material = new THREE.MeshPhongMaterial();

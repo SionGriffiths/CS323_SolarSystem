@@ -83,7 +83,7 @@
 \newpage
 \section{Introduction}
 
-This report will detail the steps undertaken in constructing a visualisation of the Sun, Earth and Moon using WebGL and specifically the Three.js library.
+This report will detail the steps undertaken in constructing a visualisation of the Sun, Earth and Moon using WebGL and specifically the Three.js library. It should be noted that for this visualisation and throughout this document, the horizontal axes in the system are X and Z and the vertical is Y.
 
 To access the visualisation use the following link -  \url{http://users.aber.ac.uk/sig2/cs323/CS323\_SolarSystem/}
 
@@ -95,14 +95,9 @@ To access the visualisation use the following link -  \url{http://users.aber.ac.
                 \label{fig:basic_model}
             \end{figure}
 
-\subsection{General Overview}
-For this visualisation, it was decided that the following constants would hold:
-\begin{itemize}
-\item The axes X and Z would be horizontal, Y vertical.
-\end{itemize}
 
 \subsection{A note on image figures}
-Unless otherwise stated, all images included in this document should be recreatable using the GUI options shown and manipulation of the camera using the standard orbit controls. If no options are shown or information given in the caption, default parameters should be assumed.
+Unless otherwise stated, all images included in this document should be recreatable using the GUI options shown and careful manipulation of the camera using the standard orbit controls. If no options are shown or information given in the caption, default parameters should be assumed.
 \section{Structure \& Implementation}
 The code developed for this assignment can be split into 2 distinct packages, Model and Utils. The javascript files contained within the model package are essentially the descriptions of the entities within the system, the Earth, Sun and Moon. These files contain data regarding the state of the entities (geometry etc) along with functions which control their behaviour, for example the 'update' functions which control the changes to the entities(position etc) each iteration of the main logic loop.
 
@@ -113,7 +108,7 @@ The utils package contains utility code, split across various files depending on
 Separate from these two packages is the main.js file. This file serves as the entry point and initialisation of the system along with controlling the updating of the various parts of the system, entities, camera, GUI variables etc. 
 
 
-The approach taken was an iterative one, starting with implementing the basic requirements using the native Three.js functionality, this allowed a basic understanding of the task at hand and provided a means to further familiarise myself with the Three.js framework. Once basic functionalities were implemented, prototyping of the extended requirements could begin, again in an iterative manner, since not everything worked as expected with Three.js to begin with.
+The approach taken was an iterative one, starting with implementing the basic requirements using the native Three.js functionality, this allowed a basic understanding of the task at hand and provided a means to further familiarise myself with the Three.js framework. Once basic functionalities were implemented, prototyping of the extended requirements could begin, again in an iterative manner, with ongoing testing throughout. Testing was done mostly via careful observation and use of debugging tools native to browsers and the WebStorm IDE provided by JetBrains.
 
 
 \section{Orbits}
@@ -283,15 +278,29 @@ This is the only requirement which could be considered unfulfilled. Indeed there
 \subsection{Extended}
 
 \subsubsection{Lighting of the earth and moon in Phong shading}
+Phong shading is implemented in the system for the Earth and the Moon via native Three.js functionalities. The desired shading is achieved through definition of mesh material as \texttt{THREE.MeshPhongMaterial()}, inbuilt Three.js functionality then correctly configures the shaders for these meshes if a compatible light is used, for example PointLight or SpotLight.
+
+\begin{figure}[h!]
+                \centering
+                \includegraphics[width=0.8\columnwidth]{media/spec}
+                \caption{Screen capture showing specular reflection details}
+\end{figure}
 
 
 \subsubsection{Non-illuminated parts of the earth and moon to be shown in shadow \& Eclipse shadows}
+The shadows in the system are achieved via use of a SpotLight, located in the Sun. The SpotLight uses native Three.js functionality to cast shadows on meshes which have been explicitly enabled for shadows via configuration of the \texttt{mesh.castShadow} and \texttt{mesh.receiveShadow} parameters. The SpotLight gives the effect of radiating light from the sun in all directions but is in fact targeting the earth explicitly with each animation update. 
 
 
 \begin{figure}[h!]
                 \centering
                 \includegraphics[width=0.8\columnwidth]{media/eclipse}
-                \caption{Emissive texture with different colours. The colour can be changed by using a different hex value on line 12 in sun.js}
+                \caption{Screen capture detailing the moon's eclipse shadow}
+\end{figure}
+
+\begin{figure}[h!]
+                \centering
+                \includegraphics[width=0.8\columnwidth]{media/shadow1}
+                \caption{Screen capture showing shadow of non-illuminated surfaces}
 \end{figure}
 \medskip
 
@@ -358,46 +367,109 @@ Due to the nature of the Moon's motion when using an elliptical, non-constant ve
 
 \section{User Interface}
 \subsection{Suitable user control interface for viewing, scaling, timing}
+A third party GUI framework, dat.GUI, was used to achieve the user controls for parameter settings along with using the OrbitControls.js bundled with Three.js to allow zooming and camera manipulations.
+
+\begin{figure}[h!]
+                \centering
+                \includegraphics[width=0.4\columnwidth]{media/gui}
+                \caption{Screen capture showing the GUI provided through dat.GUI}
+\end{figure}
+
+The implementation of the parameter controls was straight forward and well documented online. A list of variables to be controlled is defined with initial values:
+
+\begin{lstlisting}[caption=Code taken from main.js]
+var guiVars = {
+    ambientLightIntensity : 0.2,
+    moonOrbitTrace : false,
+    earthOrbitTrace : false,
+    removeSun : false,
+    paused : false,
+    sceneAxes : false,
+    earthAxes : false,
+    moonAxes : false,
+    sunAxes : false,
+    shadowCam : false,
+    simSpeed : 1
+};
+
+
+\end{lstlisting}
+
+These are then added to a new dat.GUI object and logic based on their state can be implemented.
+\section{Running the System}
+As mentioned in the Introduction the visualisation can be accessed via \url{http://users.aber.ac.uk/sig2/cs323/CS323\_SolarSystem/}
+Due to browsers blocking cross origin requests for assets it is not feasible to run the system correctly locally without the use of extra software which may not be available on the test machines. It is assumed then that the test machines will be equipped with a browser and able to access the university public html. 
+\section{Credits}
+
+\begin{itemize}
+\item dat.GUI for the UI
+\item Paul Bourke for the starmap
+\item planetpixelemporium for textures
+\item learningthreejs for various tutorials
+\end{itemize}
+
 \section{Self Assessment}
 
- \begin{tabularx}{0.8\columnwidth}{| X | X | X |}
+ \begin{tabularx}{0.5\columnwidth}{| X | X | X |}
             \hline
-            Task & Documented & Implemented \\
+            Basic Task & Documented & Implemented \\
             \hline
-            1 & x & ✓ \\
+            1 & Yes & Yes \\
             \hline
-            2 & ✓ & ✓ \\
+            2 & Yes & Yes\\
             \hline
-            3 & ✓ & ✓ \\
+            3 & Yes & Yes \\
             \hline
-            4 & ✓ & ✓ \\
+            4 & Yes & Yes \\
             \hline
-            5 & ✓ & ✓ \\
+            5 & Yes & Yes \\
             \hline
-            7 & ✓ & ✓ \\
+            7 & Yes & Yes \\
             \hline
-            7 & ✓ & ✓ \\
+            7 & Yes & Yes \\
             \hline
         \end{tabularx} \\
 
+        \vspace{1em}
+        \begin{tabularx}{0.5\columnwidth}{| X | X | X |}
+            \hline
+            Extension & Documented & Implemented \\
+            \hline
+            a & Yes & Yes \\
+            \hline
+            b & Yes & Yes \\
+            \hline
+            c &Yes & Yes \\
+            \hline
+            d &Yes & Yes \\
+            \hline
+            e & Yes & Yes \\
+            \hline
+            f & Yes & Yes \\
+            \hline
+            g & Yes & Yes \\
+            \hline
+            h & Yes & Yes \\
+            \hline
+            i & Yes & Yes \\
+            \hline
+            j & Yes & Yes \\
+            \hline
+        \end{tabularx} \\
+
+       
+        \vspace{1em}
+        \begin{tabularx}{0.5\columnwidth}{| X | c |}
+            \hline
+            Animation can be viewed in B57, C56 without additional software & Yes \\
+            \hline
+            All reference sources are acknowledged & Yes \\
+            \hline
+            Overall self-assessment out of 50 & 35 \\
+            \hline
+        \end{tabularx}
 
 
- \begin{thebibliography}{1}
- 	
- 	\bibitem{replyBuy} David Uccelli, Multichannel Blog {\em http://www.multichannel-blog.co.uk/2012/02/13/80-of-portaltech-uk-hybris-partner-bought-for-1-6m/} Accessed September 2015
- 	\bibitem{growthGraph} Reply LTD, Company profile {\em http://www.reply.eu/InvestorsDocuments/en/Company\_Profile\_eng.pdf} Accessed September 2015
- 	\bibitem{stock} Google Finance, Reply S.p.A profile {\em https://www.google.co.uk/finance?q=BIT\%3AREY} Accessed September 2015
- 	
- 	
- 	
- 	
- 		
- %	\bibitem{hoover} Dun \& Bradstreet, Hoover.com - Corporate Data Analyser and Aggregator {\em http://bit.ly/1Dj9e1m }
-
-	
-
-
- \end{thebibliography}
 
 
 \end{document}
