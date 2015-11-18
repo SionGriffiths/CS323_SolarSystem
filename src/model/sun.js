@@ -46,7 +46,6 @@ var Sun = function(){
     };
 
     this.computeRotationMatrix = function(globalVars){
-    //13.52
         var annualRotations = (globalVars.numIterationsInYear/13.52);
         var speed = Math.floor(globalVars.simSpeed);
         var rotValue = 360/annualRotations*speed;
@@ -54,6 +53,19 @@ var Sun = function(){
         return getYRotationMatrixAsMat4(rotValue);
     };
 
+    this.setAxisLine = function(lines){
+        var self = this;
+        $.each( lines, function( key, value ) {
+            self.mesh.add(value);
+        });
+    };
+
+    this.removeAxisLine = function(lines){
+        var self = this;
+        $.each( lines, function( key, value ) {
+            self.mesh.remove(value);
+        });
+    };
 
 
 };

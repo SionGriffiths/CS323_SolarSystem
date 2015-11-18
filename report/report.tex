@@ -95,7 +95,14 @@ To access the visualisation use the following link -  \url{http://users.aber.ac.
                 \label{fig:basic_model}
             \end{figure}
 
+\subsection{General Overview}
+For this visualisation, it was decided that the following constants would hold:
+\begin{itemize}
+\item The axes X and Z would be horizontal, Y vertical.
+\end{itemize}
 
+\subsection{A note on image figures}
+Unless otherwise stated, all images included in this document should be recreatable using the GUI options shown and manipulation of the camera using the standard orbit controls. If no options are shown or information given in the caption, default parameters should be assumed.
 \section{Structure \& Implementation}
 The code developed for this assignment can be split into 2 distinct packages, Model and Utils. The javascript files contained within the model package are essentially the descriptions of the entities within the system, the Earth, Sun and Moon. These files contain data regarding the state of the entities (geometry etc) along with functions which control their behaviour, for example the 'update' functions which control the changes to the entities(position etc) each iteration of the main logic loop.
 
@@ -113,6 +120,11 @@ The approach taken was an iterative one, starting with implementing the basic re
 
 \subsection{Basics}
 \subsubsection{Circular orbits}
+\begin{figure}[h!]
+                \centering
+                \includegraphics[width=0.4\columnwidth]{media/cicOrb}
+                \caption{Screen captures displaying the circular orbit of the Moon around the Earth, a code change is required to display a circular orbit within the finished system. This can be achieved by setting the first parameter of generateElliptical() to 0 on line 88 of main.js }
+            \end{figure}
 During the initial prototyping stage of development, the orbits of the Earth and Moon were implemented as simple circles. This was achieved using simple trigonometry to update the relative positions on the x and z axes. The function to achieve this is shown in the code snippet below,:
 
 \begin{lstlisting}[caption=Simple orbit calculation]
@@ -146,14 +158,13 @@ Using the information given within the assignment brief, elliptical orbits and n
                 \centering
                 \includegraphics[width=0.8\columnwidth]{media/ellipboth}
                 \caption{Screen captures displaying the orbit of the Moon calculated with different eccentricity values. 0.5 on the left, 0.3 (system default) on the right. In order to change this value the code needs to be changed in main.js, line 88. The first parameter for the function generateElliptical()}
-                \label{fig:basic_model}
             \end{figure}
 \FloatBarrier
 The distance between the list of vectors generated for the orbit is not constant, the effect of this is a non-uniform orbital velocity as the points are traversed in the animation, giving an approximation of planetary motion.
 
 The code for generating the elliptical is shown below:
 
-\begin{lstlisting}[caption=Above code can be found in OrbitUtils.js]
+\begin{lstlisting}[caption=Above code can be found in OrbitUtils.js and is adapted from the formulas given in the assignment brief.]
 this.generateElliptical = function(eccentricity, periodSlices, semiMajorAxis, tiltValue){
 
     var orbitVerts = [];
@@ -181,12 +192,54 @@ var computeTheta = function(e,theta,periodSlices){
 var computeR = function(e, theta, a){
     return (a*(1-Math.pow(e,2)))/(1+e*Math.cos(theta));
 };
+\end{lstlisting}
+
+Similar to the circular orbit described in an earlier section, the coordinate points are relative, they are generated with the scene origin (position 0,0,0) as the centre of their orbit. In the case of the Earth, since the centre of the Sun is at the origin point (0,0,0) no further action is required beyond specifying the orbit distance as the \texttt{semiMajorAxis} parameter in the above \texttt{generateElliptical} function. However, for the Moon to orbit the centre of the Earth we must apply these relative orbit positions to the current position of the Earth. The code to do so is detailed below:
+\begin{lstlisting}[caption=Code taken from Moon.js showing the moon mesh position being set as that of the Earth plus the relative axis positions from the orbital point list]
+this.getMesh().position.x = earth.getX() + this.orbitPoints[count].x;
+this.getMesh().position.y = earth.getY() + this.orbitPoints[count].y;
+this.getMesh().position.z = earth.getZ() + this.orbitPoints[count].z;
 
 \end{lstlisting}
 
 
-
 \subsubsection{Constant tilt of the Moon’s orbit}
+\begin{figure}[h!]
+                \centering
+                \includegraphics[width=0.8\columnwidth]{media/moonTilt}
+                \caption{Screen capture showing a trace of the Moon's orbit (gray) compared to the Earth's (pink)}
+\end{figure}
+
+The process of applying a constant tilt to the Moon's orbit is fairly straight forward. Given a list of vectors defining positional data for the orbit(as generated by the elliptical orbit code in the above section for example) and the desired angle of rotation, a matrix can be applied to each vector in the list in order to apply the desired transform.
+
+In the case of the Moon's orbit we need to apply a rotation through a horizontal axis to achieve a tilt in the vertical. In this case the Z axis. The angle of rotation is passed into the below function and converted to radians before being applied as a standard z-rotation matrix. 
+\begin{lstlisting}[caption=Above code can be found in OrbitUtils.js]
+this.applyTiltToOrbit = function(angle, points){
+    var tiltRotation =  getZRotationMatrixAsMat4(angle);
+    for(var i = 0; i < points.length; i++){
+        points[i] = applyMat4toVec3(tiltRotation,points[i]);
+    }
+    return points;
+};
+\end{lstlisting}
+
+\begin{lstlisting}[caption=Definition of a rotation matrix in the Z axis. Can be found in MatrixUtils.js]
+function getZRotationMatrixAsMat4 (angle){
+
+    var radians = deg2rad(angle);
+    var mat4 = new THREE.Matrix4();
+    
+    mat4.set(
+        Math.cos(radians), -Math.sin(radians), 0, 0,
+        Math.sin(radians), Math.cos(radians), 0, 0,
+        0, 0, 1, 0,
+        0, 0, 0, 1
+    );
+    
+    return mat4;
+}
+
+\end{lstlisting}
 
 
 \section{Textures and lighting}
@@ -197,7 +250,7 @@ var computeR = function(e, theta, a){
 The spherical entities in the system (Sun, Earth and Moon) are meshes consisting of texture mapped sphere geometries. The geometries are defined as Three.js native SphereGeometry.
 
 Texture mapping of the meshes was achieved using Three.js native loadTexture functionality, an example of the Earth mesh being defined is below:
-\begin{lstlisting}
+\begin{lstlisting}[caption=Above code can be found in sun.js]
 this.geometry = new THREE.SphereGeometry(4, 32, 32);
 this.material = new THREE.MeshPhongMaterial();
 this.material.map = THREE.ImageUtils.loadTexture('assets/images/earthmap1k.jpg');
@@ -207,7 +260,6 @@ this.material.map = THREE.ImageUtils.loadTexture('assets/images/earthmap1k.jpg')
                 \centering
                 \includegraphics[width=0.8\columnwidth]{media/textures}
                 \caption{A screen capture showing texture detail}
-                \label{fig:basic_model}
 \end{figure}
 
 
@@ -222,23 +274,39 @@ this.material =  new THREE.MeshPhongMaterial({
 \begin{figure}[h!]
                 \centering
                 \includegraphics[width=0.8\columnwidth]{media/sunShades}
-                \caption{Emissive texture with different colours}
-                \label{fig:basic_model}
+                \caption{Emissive texture with different colours. The colour can be changed by using a different hex value on line 12 in sun.js}
 \end{figure}
 
 \subsubsection{Earth and moon lit by a single point light source located at the centre of the Sun}
-This is the only requirement which could be considered unfulfilled. Indeed there is no point light in the centre of the sun. However, the Earth and Moon are lit from a light source at the centre of the Sun, in order for shadows to be implemented it was necessary to use a source other than point light since it does not support such functionality. This is a limitation imposed by Three.js for efficiency sake. Please see section below for details of the shadows.
+This is the only requirement which could be considered unfulfilled. Indeed there is no point light in the centre of the sun. However, the Earth and Moon are lit from a light source at the centre of the Sun, in order for shadows to be implemented it was necessary to use a source other than point light since it does not support such functionality. This is a limitation imposed by Three.js for efficiency sake. Please see section 4.2.2 below for details of the shadows.
+
 \subsection{Extended}
+
 \subsubsection{Lighting of the earth and moon in Phong shading}
-\subsubsection{Non-illuminated parts of the earth and moon to be shown in shadow}
+
+
+\subsubsection{Non-illuminated parts of the earth and moon to be shown in shadow \& Eclipse shadows}
+
+
+\begin{figure}[h!]
+                \centering
+                \includegraphics[width=0.8\columnwidth]{media/eclipse}
+                \caption{Emissive texture with different colours. The colour can be changed by using a different hex value on line 12 in sun.js}
+\end{figure}
 \medskip
 
 \section{Axes and tilts}
 
 \subsection{Basics}
 \subsubsection{The sun, earth and moon each spinning on their own axes}
+\begin{figure}[h!]
+                \centering
+                \includegraphics[width=0.8\columnwidth]{media/axes}
+                \caption{Emissive texture with different colours. The colour can be changed by using a different hex value on line 12 in sun.js}
+\end{figure}
 \subsection{Extended}
-\subsubsection{Constant tilt of the earth’s axis}
+\subsubsection{Constant tilt of the Earth’s axis}
+\subsubsection{Synchronous orbital and axial rotations of the moon}
 
 \section{User Interface}
 \subsection{Suitable user control interface for viewing, scaling, timing}

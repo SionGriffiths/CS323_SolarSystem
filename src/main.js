@@ -2,7 +2,8 @@
 var Main = function(){
 
     var camera,renderer,earth,sun,moon,globalVars,orbitUtils,shadowLight,
-        controls,ambientLight,gui,sceneAxes = [],earthAxis = [],moonAxes = [],ambientIntensityInitial = 1;
+        controls,ambientLight,gui,sceneAxes = [],earthAxis = [],sunAxes = [],
+        moonAxes = [],ambientIntensityInitial = 1;
 
     var guiVars = {
         ambientLightIntensity : 0.2,
@@ -13,6 +14,7 @@ var Main = function(){
         sceneAxes : false,
         earthAxes : false,
         moonAxes : false,
+        sunAxes : false,
         shadowCam : false,
         simSpeed : 1
     };
@@ -75,6 +77,7 @@ var Main = function(){
         globalVars.numIterationsInYear = pointList.length;
         sun = new Sun();
         sun.init(globalVars);
+        sunAxes = makeLines(30,false, 0x00AFFA, 0xFA00AF, 0xAFFA00);
         addToScene(sun.getMesh());
         earth = new Earth();
         earth.orbitPoints = pointList;
@@ -85,7 +88,7 @@ var Main = function(){
         moon = new Moon();
         moon.init();
         moonAxes = makeLines(10,false,0x59242A, 0xF2B96E, 0x647D50);
-        moon.orbitPoints = orbitUtils.applyTiltToOrbit(-5.145,orbitUtils.generateElliptical(0.5, 273.2, 10));
+        moon.orbitPoints = orbitUtils.applyTiltToOrbit(-5.145,orbitUtils.generateElliptical(0, 273.2, 10));
         moon.orbitPlot = orbitUtils.plotOrbit(moon.orbitPoints,0xb2b2b2);
         addToScene(moon.getMesh());
         addToScene(initSkyBox());
@@ -120,7 +123,6 @@ var Main = function(){
     };
 
     var UpdateGUIVars = function(){
-        console.log(guiVars.shadowCam);
         ambientIntensityInitial = guiVars.ambientLightIntensity;
         if(globalVars.simSpeed != guiVars.simSpeed) {
             globalVars.simSpeed = guiVars.simSpeed;
@@ -151,6 +153,11 @@ var Main = function(){
             moon.setAxisLine(moonAxes);
         }else{
             moon.removeAxisLine(moonAxes);
+        }
+        if(guiVars.sunAxes){
+            sun.setAxisLine(sunAxes);
+        }else{
+            sun.removeAxisLine(sunAxes);
         }
     };
 
@@ -184,6 +191,7 @@ var Main = function(){
         gui.add(guiVars, 'earthOrbitTrace').name('Trace Earth Orbit');
         gui.add(guiVars, 'removeSun').name('Toggle Sun');
         gui.add(guiVars, 'sceneAxes').name('Toggle Scene Axes');
+        gui.add(guiVars, 'sunAxes').name('Toggle Sun Axes');
         gui.add(guiVars, 'earthAxes').name('Toggle Earth Axes');
         gui.add(guiVars, 'moonAxes').name('Toggle Moon Axes');
         gui.add(guiVars, 'shadowCam').name('Toggle Shadow Cam');
