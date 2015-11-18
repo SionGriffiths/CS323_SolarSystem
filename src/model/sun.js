@@ -70,3 +70,18 @@ var Sun = function(){
 
 };
 
+//calculate rotation per update
+rotValue = 360/this.pointsInDay*Math.floor(this.globalVars.simSpeed);
+this.rotationMatrix = getYRotationMatrixAsMat4(rotValue);
+
+var transToOrigin = new THREE.Matrix4().makeTranslation( -this.getX(), -this.getY(), -this.getZ());
+//translate mesh to origin before applying transforms
+this.mesh.applyMatrix(transToOrigin);
+
+this.mesh.applyMatrix(this.removeAxialTiltMatrix);
+this.mesh.applyMatrix(this.rotationMatrix);
+this.mesh.applyMatrix(this.axialTiltMatrix);
+
+//update position in pre-calculated orbit array
+this.mesh.position.z = this.orbitPoints[count].z;
+this.mesh.position.x = this.orbitPoints[count].x;

@@ -299,14 +299,62 @@ This is the only requirement which could be considered unfulfilled. Indeed there
 
 \subsection{Basics}
 \subsubsection{The sun, earth and moon each spinning on their own axes}
+Using the GUI options to enable axes on the sun, earth and moon, it is clear to see all meshes rotating on their own axes. This could be achieved very simply with Three.js by using the \texttt{rotation.axes} functionality of a mesh and incrementing the value with each animation update. For the completed a different approach is taken and is detailed in a section below.
 \begin{figure}[h!]
                 \centering
                 \includegraphics[width=0.8\columnwidth]{media/axes}
-                \caption{Emissive texture with different colours. The colour can be changed by using a different hex value on line 12 in sun.js}
+                \caption{Screen capture showing all axes}
 \end{figure}
+
 \subsection{Extended}
-\subsubsection{Constant tilt of the Earth’s axis}
+\subsubsection{Constant tilt of the Earth’s axis \& Earth's rotation}
+
+\begin{figure}[h!]
+                \centering
+                \includegraphics[width=0.8\columnwidth]{media/earthTilt}
+                \caption{Screen capture showing tilt of earth axes compared to the scene axes}
+\end{figure}
+
+The tilt of the Earth's axis is essentially defined by a matrix rotation in a horizontal axis. This is applied to the Earth mesh during initialisation using the Three.js \texttt{applyMatrix} functionality. The code to define an initial axial tilt of 23.4 degrees is shown below:
+\begin{lstlisting}[caption=Code taken from Earth.js]
+this.axialTiltMatrix = getZRotationMatrixAsMat4(23.4);
+ this.mesh.applyMatrix(this.axialTiltMatrix);
+\end{lstlisting}
+
+
+The situation becomes slightly more complex when we need to define further matrix transforms on the same mesh, for instance in the case of the Earth, we'd like to rotate around the tilted axis. It is also desirable to be able to control the number of rotations completed in one orbital period such that a year in days can be simulated.
+\\ 
+In order to properly define a matrix to describe the axial rotation of the Earth we must calculate the amount of rotation per animation update. We can calculate the number of orbit points traversed in one 'day' with the following code, since the system will traverse one orbitPoint index per update :
+
+\begin{lstlisting}[caption=Code taken from Earth.js]
+ this.pointsInDay = (this.orbitPoints.length/365.26);
+\end{lstlisting}
+We can then use this \texttt{pointsInDay} value to calculate a rotation angle by simply dividing a whole rotation (360 degrees) by this value. We can then scale this value by the global simulation speed setting to keep everything synchronized as the user changes the speed. Once we have this value we can rotate the Earth mesh correctly per update. In order to rotate correctly and be able to preserve an axial tilt, the tilt matrix must be removed ( by applying the opposite rotation), the rotation then applied and the tilt reinstated. The code to do  so is detailed below:
+
+\begin{lstlisting}[caption=Code taken from Earth.js]
+//calculate rotation per update
+rotValue = 360/this.pointsInDay*Math.floor(this.globalVars.simSpeed);
+this.rotationMatrix = getYRotationMatrixAsMat4(rotValue);
+
+var transToOrigin = new THREE.Matrix4().makeTranslation( -this.getX(), -this.getY(), -this.getZ());
+//translate mesh to origin before applying transforms
+this.mesh.applyMatrix(transToOrigin);
+
+this.mesh.applyMatrix(this.removeAxialTiltMatrix);
+this.mesh.applyMatrix(this.rotationMatrix);
+this.mesh.applyMatrix(this.axialTiltMatrix);
+
+//update position in pre-calculated orbit array
+this.mesh.position.z = this.orbitPoints[count].z;
+this.mesh.position.x = this.orbitPoints[count].x;
+
+\end{lstlisting}
+
+After the rotation, we can explicitly set the position of the mesh from the orbital points array without having to first translate from the origin since in this case the positional values in the orbital points are relative to the origin..
+
 \subsubsection{Synchronous orbital and axial rotations of the moon}
+
+Due to the nature of the Moon's motion when using an elliptical, non-constant velocity orbit it was decided to use a shortcut method to achieve the synchronisation of orbit and rotation: using the Three.js \texttt{lookAt()} function. Essentially this will set a constant face to the Earth for each animation update.
 
 \section{User Interface}
 \subsection{Suitable user control interface for viewing, scaling, timing}

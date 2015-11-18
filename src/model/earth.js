@@ -27,11 +27,9 @@ var Earth = function(){
         this.guiVars = guiVars;
         this.matrixAutoUpdate = false;
         this.pointsInDay = (this.orbitPoints.length/365.26);
-        rotValue = 360/this.pointsInDay*Math.floor(globalVars.simSpeed);
-        this.rotationMatrix = getYRotationMatrixAsMat4(rotValue);
         this.axialTiltMatrix = getZRotationMatrixAsMat4(23.4);
-        this.removeAxialTiltMatrix = getZRotationMatrixAsMat4(-23.4);
         this.mesh.applyMatrix(this.axialTiltMatrix);
+        this.removeAxialTiltMatrix = getZRotationMatrixAsMat4(-23.4);
     };
 
     this.getMesh = function(){
@@ -40,7 +38,6 @@ var Earth = function(){
 
 
     var currads = 0;
-
     this.calcDays = function(radsAmount){
         currads += radsAmount;
         if(currads >= 2 * Math.PI){
@@ -53,22 +50,25 @@ var Earth = function(){
     };
 
     this.update = function(){
+
+        //calculate rotation per update
         rotValue = 360/this.pointsInDay*Math.floor(this.globalVars.simSpeed);
         this.rotationMatrix = getYRotationMatrixAsMat4(rotValue);
-        this.calcDays(deg2rad(rotValue));
 
         var transToOrigin = new THREE.Matrix4().makeTranslation( -this.getX(), -this.getY(), -this.getZ());
         //translate mesh to origin before applying transforms
         this.mesh.applyMatrix(transToOrigin);
+
         this.mesh.applyMatrix(this.removeAxialTiltMatrix);
         this.mesh.applyMatrix(this.rotationMatrix);
         this.mesh.applyMatrix(this.axialTiltMatrix);
-
 
         //update position in pre-calculated orbit array
         this.mesh.position.z = this.orbitPoints[count].z;
         this.mesh.position.x = this.orbitPoints[count].x;
 
+
+        this.calcDays(deg2rad(rotValue));
         count +=Math.floor(this.globalVars.simSpeed) ;
         //count++;
         if(count >= this.orbitPoints.length){
