@@ -5,16 +5,33 @@ html, body {
     padding: 0;
 }
 
-h3,h4{
+h3,h4,h5{
     color: #FFFFFF;
     font-family: Arial, Helvetica, sans-serif;
     margin: 0;
     padding-top: 5px; padding-bottom: 5px;
 }
-
+a {
+    color: #FFFFFF;
+    display: block;
+}
 span{
     color: #FFFFFF;
     display: block;
     font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
     font-size: 80%;
+}
+
+#infoOverlay{
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 300px;
+    height: 300px;
+}
+
+#creditsOverlay{
+    position: fixed;
+    bottom: 0px;
+    left: 0px;
 }

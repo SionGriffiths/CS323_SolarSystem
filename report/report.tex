@@ -110,7 +110,50 @@ Separate from these two packages is the main.js file. This file serves as the en
 
 The approach taken was an iterative one, starting with implementing the basic requirements using the native Three.js functionality, this allowed a basic understanding of the task at hand and provided a means to further familiarise myself with the Three.js framework. Once basic functionalities were implemented, prototyping of the extended requirements could begin, again in an iterative manner, with ongoing testing throughout. Testing was done mostly via careful observation and use of debugging tools native to browsers and the WebStorm IDE provided by JetBrains.
 
+\subsection{Parameters}
+The scales used in the visualisation are totally arbitrary, chosen to provide a visually pleasing and easy to navigate system rather than anything faithful to reality. Distances between objects with an elliptical orbit are the value for the semi-major axis length.
+\subsubsection{Earth}
+ \begin{tabularx}{0.75\columnwidth}{| X | X |}
+            \hline
+            Earth Radius & 4 units or 1 Earth radius \\
+            \hline
+            Earth - Sun distance  & 80 or 20 Earth radii \\
+            \hline
+            Earth Axial tilt & 23.4 degrees \\
+            \hline
+            Earth Axial rotation period & 1 day \\
+            \hline
+			Earth Orbit eccentricity & 0.12 \\
+			\hline
+			Earth Orbital period & 365.26 days \\
+			\hline
+        \end{tabularx} \\
 
+\subsubsection{Moon}
+ \begin{tabularx}{0.75\columnwidth}{| X | X |}
+            \hline
+            Moon Radius & 1 units or 0.25 Earth radii \\
+            \hline
+            Moon - Earth distance  & 10 or 2.5 Earth radii \\
+            \hline            
+            Moon Axial rotation period & 27.32 days \\
+            \hline
+			Moon Orbit eccentricity & 0.3 \\
+			\hline
+			Moon Orbital period & 27.32 days \\
+			\hline
+			Moon Orbital tilt & 5.145 degrees \\
+			\hline
+\end{tabularx} \\
+
+\subsubsection{Sun}
+ \begin{tabularx}{0.75\columnwidth}{| X | X |}
+            \hline
+            Sun Radius & 14 units or 3.5 Earth radii \\
+            \hline
+            Sun Axial rotation period & 27 days \\
+            \hline			
+        \end{tabularx} \\
 \section{Orbits}
 
 \subsection{Basics}
@@ -118,7 +161,7 @@ The approach taken was an iterative one, starting with implementing the basic re
 \begin{figure}[h!]
                 \centering
                 \includegraphics[width=0.4\columnwidth]{media/cicOrb}
-                \caption{Screen captures displaying the circular orbit of the Moon around the Earth, a code change is required to display a circular orbit within the finished system. This can be achieved by setting the first parameter of generateElliptical() to 0 on line 88 of main.js }
+                \caption{Screen captures displaying the circular orbit of the Moon around the Earth, a code change is required to display a circular orbit within the finished system. This can be achieved by setting the first parameter of generateElliptical() to 0 on line 91 of main.js }
             \end{figure}
 During the initial prototyping stage of development, the orbits of the Earth and Moon were implemented as simple circles. This was achieved using simple trigonometry to update the relative positions on the x and z axes. The function to achieve this is shown in the code snippet below,:
 
@@ -152,7 +195,7 @@ Using the information given within the assignment brief, elliptical orbits and n
 \begin{figure}[h!]
                 \centering
                 \includegraphics[width=0.8\columnwidth]{media/ellipboth}
-                \caption{Screen captures displaying the orbit of the Moon calculated with different eccentricity values. 0.5 on the left, 0.3 (system default) on the right. In order to change this value the code needs to be changed in main.js, line 88. The first parameter for the function generateElliptical()}
+                \caption{Screen captures displaying the orbit of the Moon calculated with different eccentricity values. 0.5 on the left, 0.3 (system default) on the right. In order to change this value the code needs to be changed in main.js, line 91. The first parameter for the function generateElliptical()}
             \end{figure}
 \FloatBarrier
 The distance between the list of vectors generated for the orbit is not constant, the effect of this is a non-uniform orbital velocity as the points are traversed in the animation, giving an approximation of planetary motion.
@@ -266,12 +309,13 @@ this.material =  new THREE.MeshPhongMaterial({
     emissiveMap: new THREE.TextureLoader().load("assets/images/sunmap.jpg")
 });
 \end{lstlisting}
+\FloatBarrier
 \begin{figure}[h!]
                 \centering
                 \includegraphics[width=0.8\columnwidth]{media/sunShades}
                 \caption{Emissive texture with different colours. The colour can be changed by using a different hex value on line 12 in sun.js}
 \end{figure}
-
+\FloatBarrier
 \subsubsection{Earth and moon lit by a single point light source located at the centre of the Sun}
 This is the only requirement which could be considered unfulfilled. Indeed there is no point light in the centre of the sun. However, the Earth and Moon are lit from a light source at the centre of the Sun, in order for shadows to be implemented it was necessary to use a source other than point light since it does not support such functionality. This is a limitation imposed by Three.js for efficiency sake. Please see section 4.2.2 below for details of the shadows.
 
@@ -376,7 +420,7 @@ A third party GUI framework, dat.GUI, was used to achieve the user controls for 
 \end{figure}
 
 The implementation of the parameter controls was straight forward and well documented online. A list of variables to be controlled is defined with initial values:
-
+\FloatBarrier
 \begin{lstlisting}[caption=Code taken from main.js]
 var guiVars = {
     ambientLightIntensity : 0.2,
@@ -398,14 +442,14 @@ var guiVars = {
 These are then added to a new dat.GUI object and logic based on their state can be implemented.
 \section{Running the System}
 As mentioned in the Introduction the visualisation can be accessed via \url{http://users.aber.ac.uk/sig2/cs323/CS323\_SolarSystem/}
-Due to browsers blocking cross origin requests for assets it is not feasible to run the system correctly locally without the use of extra software which may not be available on the test machines. It is assumed then that the test machines will be equipped with a browser and able to access the university public html. 
+For the local execution of the visualisation, unzip the files, change directory into the file CS323\_SolarSystem and open the index.html file with Firefox.  Currently other browsers may not function in this manner due to cross-site origin security functionality. In those cases please use the link provided.
 \section{Credits}
 
 \begin{itemize}
-\item dat.GUI for the UI
-\item Paul Bourke for the starmap
-\item planetpixelemporium for textures
-\item learningthreejs for various tutorials
+\item dat.GUI for the UI  - \url{https://code.google.com/p/dat-gui/}
+\item Paul Bourke for the starmap - \url{http://paulbourke.net/}
+\item planetpixelemporium for textures - \url{http://planetpixelemporium.com/}
+\item learningthreejs for various tutorials - \url{http://learningthreejs.com/}
 \end{itemize}
 
 \section{Self Assessment}
@@ -465,7 +509,7 @@ Due to browsers blocking cross origin requests for assets it is not feasible to 
             \hline
             All reference sources are acknowledged & Yes \\
             \hline
-            Overall self-assessment out of 50 & 35 \\
+            Overall self-assessment out of 50 & 36 \\
             \hline
         \end{tabularx}
 

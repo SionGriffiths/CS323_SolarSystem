@@ -88,7 +88,7 @@ var Main = function(){
         moon = new Moon();
         moon.init();
         moonAxes = makeLines(10,false,0x59242A, 0xF2B96E, 0x647D50);
-        moon.orbitPoints = orbitUtils.applyTiltToOrbit(-5.145,orbitUtils.generateElliptical(0, 273.2, 10));
+        moon.orbitPoints = orbitUtils.applyTiltToOrbit(-5.145,orbitUtils.generateElliptical(0.3, 273.2, 10));
         moon.orbitPlot = orbitUtils.plotOrbit(moon.orbitPoints,0xb2b2b2);
         addToScene(moon.getMesh());
         addToScene(initSkyBox());
